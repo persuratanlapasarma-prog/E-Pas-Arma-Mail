@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-PAS Persuratan | Lapas Arga Makmur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; }
+        .card { border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: none; }
+        .navbar-custom { background-color: #0c4a6e; } /* Warna biru elegan */
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark navbar-custom mb-4 shadow-sm">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1 fw-bold">e-PAS Persuratan - Lapas Kelas IIB Arga Makmur</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <h4 class="mb-4 text-center fw-bold text-secondary">Formulir Surat Keluar</h4>
+                    
+                    <form id="formSuratKeluar">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Jenis Surat</label>
+                            <select id="jenisSurat" class="form-select" required>
+                                <option value="" disabled selected>-- Pilih Jenis Surat --</option>
+                                <option value="Surat Dinas">Surat Dinas</option>
+                                <option value="Surat Keputusan">Surat Keputusan</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Kategori Klasifikasi</label>
+                            <select id="kategoriKlasifikasi" class="form-select" required onchange="updateSubKlasifikasi()">
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <option value="PR">PR (Perencanaan)</option>
+                                <option value="UM">UM (Umum)</option>
+                                <option value="KU">KU (Keuangan)</option>
+                                </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Sub Klasifikasi (Kode)</label>
+                            <select id="subKlasifikasi" class="form-select" required>
+                                <option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Perihal Surat</label>
+                            <input type="text" id="perihal" class="form-control" placeholder="Contoh: Undangan Rapat Internal" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Tujuan Surat</label>
+                            <input type="text" id="tujuanSurat" class="form-control" placeholder="Contoh: Kakanwil Kemenkumham Bengkulu" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="btnGenerate">
+                            ✨ Generate Nomor & Simpan
+                        </button>
+                    </form>
+
+                    <div id="hasilGenerate" class="alert alert-success mt-4 d-none text-center">
+                        <p class="mb-1">Nomor Surat Anda:</p>
+                        <h3 id="teksNomorSurat" class="fw-bold text-dark mb-0"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // ⚠️ PENTING: Ganti dengan konfigurasi dari Firebase Project Settings Anda
+        const firebaseConfig = {
+            apiKey: "AIzaSyDa_o2vtwg8BhCZHqYW18ALx6d-IMJtN6A",
+            authDomain: "epas-persuratan-arma.firebaseapp.com",
+            databaseURL: "https://epas-persuratan-arma-default-rtdb.firebaseio.com",
+            projectId: "epas-persuratan-arma",
+            storageBucket: "epas-persuratan-arma.firebasestorage.app",
+            messagingSenderId: "8625154984",
+            appId: "1:8625154984:web:40a6f97fdb13eba3ec4b9d",
+            measurementId: "G-VB22YP3860"
+            };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Logika saat tombol Generate ditekan
+        document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Mencegah halaman reload
+            
+            const btn = document.getElementById("btnGenerate");
+            btn.innerHTML = "Memproses...";
+            btn.disabled = true;
+
+            try {
+                const tahunIni = new Date().getFullYear();
+                const jenisSurat = document.getElementById("jenisSurat").value;
+                const klasifikasi = document.getElementById("subKlasifikasi").value;
+                const perihal = document.getElementById("perihal").value;
+                const tujuan = document.getElementById("tujuanSurat").value;
+
+                // 1. Cek nomor terakhir di tabel counter_penomoran
+                // Kita gunakan gabungan tahun dan klasifikasi sebagai ID dokumen (contoh: "2026_UM.01.01")
+                const counterId = `${tahunIni}_${klasifikasi}`;
+                const counterRef = doc(db, "counter_penomoran", counterId);
+                const counterSnap = await getDoc(counterRef);
+
+                let nomorTerakhir = 0;
+                if (counterSnap.exists()) {
+                    nomorTerakhir = counterSnap.data().angka_terakhir;
+                }
+                const nomorBaru = nomorTerakhir + 1;
+
+                // 2. Rangkai Teks Nomor Surat sesuai aturan
+                let nomorLengkap = "";
+                if (jenisSurat === "Surat Dinas") {
+                    nomorLengkap = `W8.PAS3.${klasifikasi}.${nomorBaru}`;
+                } else if (jenisSurat === "Surat Keputusan") {
+                    nomorLengkap = `W8.PAS3.${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+                }
+
+                // 3. Update angka di tabel counter_penomoran
+                await setDoc(counterRef, {
+                    tahun: tahunIni,
+                    klasifikasi: klasifikasi,
+                    angka_terakhir: nomorBaru
+                });
+
+                // 4. Simpan arsipnya ke tabel surat_keluar
+                await addDoc(collection(db, "surat_keluar"), {
+                    jenis_surat: jenisSurat,
+                    kode_klasifikasi: klasifikasi,
+                    nomor_urut: nomorBaru,
+                    nomor_surat_lengkap: nomorLengkap,
+                    perihal: perihal,
+                    tujuan_surat: tujuan,
+                    tanggal_dibuat: serverTimestamp()
+                });
+
+                // 5. Tampilkan ke layar
+                document.getElementById("teksNomorSurat").innerText = nomorLengkap;
+                document.getElementById("hasilGenerate").classList.remove("d-none");
+                
+                // Reset form
+                document.getElementById("formSuratKeluar").reset();
+
+            } catch (error) {
+                console.error("Terjadi kesalahan: ", error);
+                alert("Gagal mengambil nomor: " + error.message);
+            } finally {
+                btn.innerHTML = "✨ Generate Nomor & Simpan";
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+    <script>
+        // Data klasifikasi sederhana (Anda bisa lengkapi dari file teks)
+        const dataKlasifikasi = {
+            "PR": ["PR.01.01", "PR.01.02", "PR.01.03", "PR.02.01"],
+            "UM": ["UM.01.01", "UM.01.02", "UM.01.03"],
+            "KU": ["KU.01.01", "KU.01.02", "KU.02.01"]
+        };
+
+        function updateSubKlasifikasi() {
+            const kategori = document.getElementById("kategoriKlasifikasi").value;
+            const subSelect = document.getElementById("subKlasifikasi");
+            
+            // Kosongkan opsi sebelumnya
+            subSelect.innerHTML = '<option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>';
+            
+            // Isi dengan data baru
+            if (kategori && dataKlasifikasi[kategori]) {
+                dataKlasifikasi[kategori].forEach(function(sub) {
+                    const option = document.createElement("option");
+                    option.value = sub;
+                    option.text = sub;
+                    subSelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
