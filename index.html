@@ -140,165 +140,257 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-dark navbar-custom mb-5 shadow-sm">
-        <div class="container py-1 d-flex align-items-center">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="Gemini_Generated_Image_6ayzeb6ayzeb6ayz.png" alt="Logo" width="45" height="45" class="me-3 rounded-circle border border-light">
-                <div class="d-flex flex-column">
-                    <span class="fw-bold tracking-wide" style="font-size: 1.1rem;">e-PAS Persuratan Arma</span>
-                    <span style="font-size: 0.8rem; color: #EEBF63;">Lapas Kelas IIB Arga Makmur</span>
+    <div id="login-container" class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="card p-4 p-sm-5" style="max-width: 420px; width: 100%;">
+            <div class="text-center mb-4">
+                <img src="Gemini_Generated_Image_6ayzeb6ayzeb6ayz.png" alt="Logo" width="80" height="80" class="rounded-circle border border-2 mb-3 shadow-sm">
+                <h4 class="fw-bold mb-1" style="color: #07213D;">Login e-PAS</h4>
+                <p class="text-secondary small">Persuratan Lapas Arga Makmur</p>
+            </div>
+            
+            <form id="formLogin">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Seksi / Bagian</label>
+                    <select id="loginSeksi" class="form-select" required>
+                        <option value="" disabled selected>-- Pilih Seksi Anda --</option>
+                        <option value="Tata Usaha">Subbag Tata Usaha</option>
+                        <option value="KPLP">KPLP</option>
+                        <option value="Kamtib">Kamtib</option>
+                        <option value="Binadik">Binadik</option>
+                    </select>
                 </div>
-            </a>
-        </div>
-    </nav>
-
-    <div class="container-fluid px-md-5 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-12 col-xl-11">
-                <div class="card p-4 p-sm-5">
-                    
-                    <ul class="nav nav-tabs mb-4 justify-content-center" id="persuratanTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab" aria-controls="keluar-pane" aria-selected="true">📤 Surat Keluar</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="rekap-tab" data-bs-toggle="tab" data-bs-target="#rekap-pane" type="button" role="tab" aria-controls="rekap-pane" aria-selected="false">📊 Rekap Surat Keluar</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk-pane" type="button" role="tab" aria-controls="masuk-pane" aria-selected="false">📥 Surat Masuk</button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content" id="persuratanTabContent">
-                        
-                        <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" aria-labelledby="keluar-tab" tabindex="0">
-                            <div class="row justify-content-center">
-                                <div class="col-md-9 col-lg-8">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h4 class="fw-bold mb-0" style="color: #07213D;">Formulir Surat Keluar</h4>
-                                        <a href="Permen_Nomor8_Tahun2026.pdf" target="_blank" class="btn btn-sm btn-outline-danger fw-bold d-flex align-items-center gap-1">
-                                            Petunjuk Klasifikasi (PDF)
-                                        </a>
-                                    </div>
-                                    <form id="formSuratKeluar">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Jenis Surat</label>
-                                            <select id="jenisSurat" class="form-select" required>
-                                                <option value="" disabled selected>-- Pilih Jenis Surat --</option>
-                                                <option value="Surat Dinas">Surat Dinas</option>
-                                                <option value="Surat Keputusan">Surat Keputusan</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Kategori Klasifikasi</label>
-                                            <select id="kategoriKlasifikasi" class="form-select" required onchange="updateSubKlasifikasi()">
-                                                <option value="" disabled selected>-- Pilih Kategori --</option>
-                                                <option value="PR">PR (Perencanaan)</option>
-                                                <option value="UM">UM (Umum)</option>
-                                                <option value="KU">KU (Keuangan)</option>
-                                                <option value="PK">PK (Pemasyarakatan)</option>
-                                                <option value="OT">OT (Organisasi dan Tata Usaha)</option>
-                                                <option value="SA">SA (SDM Aparatur)</option>
-                                                <option value="PB">PB (Pengelolaan Barang Milik Negara)</option>
-                                                <option value="KS">KS (Kerja Sama)</option>
-                                                <option value="HK">HK (Hukum)</option>
-                                                <option value="PS">PS (Pusat Strategi dan Informasi)</option>
-                                                <option value="PW">PW (Pengawasan)</option>
-                                                <option value="TI">TI (Teknologi dan Informasi)</option>
-                                                <option value="SM">SM (SDM Imigrasi dan Pemasyarakatan)</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Sub Klasifikasi (Kode)</label>
-                                            <select id="subKlasifikasi" class="form-select" required>
-                                                <option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Perihal Surat</label>
-                                            <input type="text" id="perihal" class="form-control" placeholder="Contoh: Undangan Rapat Internal" required>
-                                        </div>
-
-                                        <div class="mb-4">
-                                            <label class="form-label fw-bold">Tujuan Surat</label>
-                                            <input type="text" id="tujuanSurat" class="form-control" placeholder="Contoh: Kanwil Ditjenpas Bengkulu" required>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-custom-primary w-100 fw-bold py-2.5" id="btnGenerate">
-                                            ✨ Generate Nomor & Simpan
-                                        </button>
-                                    </form>
-
-                                    <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
-                                        <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
-                                        <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0"></h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="rekap-pane" role="tabpanel" aria-labelledby="rekap-tab" tabindex="0">
-                            <h4 class="mb-4 fw-bold text-center" style="color: #07213D;">📊 Data Rekapan Nomor Surat Keluar</h4>
-                            <div class="table-responsive">
-                                <table id="tabelSuratKeluar" class="table table-striped table-bordered w-100">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Tanggal Dibuat</th>
-                                            <th>Nomor Surat Lengkap</th>
-                                            <th>Jenis Surat</th>
-                                            <th>Kode Klasifikasi</th>
-                                            <th>Perihal</th>
-                                            <th>Tujuan Surat</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="bodyTabelSurat">
-                                        </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane fade" id="masuk-pane" role="tabpanel" aria-labelledby="masuk-tab" tabindex="0">
-                            <div class="row justify-content-center">
-                                <div class="col-md-9 col-lg-8 text-center py-4 px-2">
-                                    <h4 class="mb-3 fw-bold" style="color: #07213D;">Digitalisasi Surat Masuk</h4>
-                                    
-                                    <div class="mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#07213D" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
-                                            <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2z"/>
-                                        </svg>
-                                    </div>
-                                    
-                                    <p class="text-secondary mb-4">
-                                        Gunakan menu di bawah ini untuk mengunggah berkas surat masuk baru, atau melihat kumpulan dokumen surat masuk yang sudah diunggah sebelumnya.
-                                    </p>
-                                    
-                                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSezWirYleq0lo5733nwyPqi_YJAv-D0cxzHedIQSmb904sQzw/viewform" target="_blank" class="btn btn-custom-primary px-4 py-3 fw-bold">
-                                            📤 Buka & Isi Form Surat Masuk
-                                        </a>
-                                        
-                                        <a href="https://drive.google.com/drive/folders/10Qm1qdcCxgU-HAZFZ4VdgbIibhVs1cKj" target="_blank" class="btn btn-custom-secondary px-4 py-3 fw-bold">
-                                            📁 Lihat File Surat Masuk (Drive)
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="alert text-start border-0 shadow-none mb-0 mt-2" style="background-color: rgba(7, 33, 61, 0.05); color: #07213D; border-radius: 12px; border-left: 4px solid #EEBF63 !important;">
-                                        <span class="fw-bold d-block mb-1">📋 Petunjuk Operasional Lapas:</span>
-                                        <small class="d-block mb-1">1. Untuk mengunggah berkas baru, klik **Isi Form Surat Masuk**.</small>
-                                        <small class="d-block">2. Untuk memeriksa arsip berkas PDF yang telah di-upload rekan kerja, klik **Lihat File Surat Masuk**.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div> </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-custom-primary w-100 fw-bold py-2">🔒 Masuk</button>
+            </form>
+            
+            <div id="loginError" class="alert alert-danger mt-3 d-none small text-center mb-0">
+                Password salah! Silakan coba lagi.
             </div>
         </div>
     </div>
+
+    <div id="main-app" class="d-none">
+        <nav class="navbar navbar-dark navbar-custom mb-5 shadow-sm">
+            <div class="container py-1 d-flex align-items-center">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="Gemini_Generated_Image_6ayzeb6ayzeb6ayz.png" alt="Logo" width="45" height="45" class="me-3 rounded-circle border border-light">
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold tracking-wide" style="font-size: 1.1rem;">e-PAS Persuratan Arma</span>
+                        <span style="font-size: 0.8rem; color: #EEBF63;">Lapas Kelas IIB Arga Makmur</span>
+                    </div>
+                </a>
+                
+                <div class="d-flex align-items-center ms-auto">
+                    <span class="text-light me-3 d-none d-md-block" style="font-size: 0.9rem;">
+                        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
+                    </span>
+                    <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold" style="border-radius: 6px;">🚪 Keluar</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid px-md-5 mb-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-xl-11">
+                    <div class="card p-4 p-sm-5">
+                        
+                        <ul class="nav nav-tabs mb-4 justify-content-center" id="persuratanTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab" aria-controls="keluar-pane" aria-selected="true">📤 Surat Keluar</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="rekap-tab" data-bs-toggle="tab" data-bs-target="#rekap-pane" type="button" role="tab" aria-controls="rekap-pane" aria-selected="false">📊 Rekap Surat Keluar</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk-pane" type="button" role="tab" aria-controls="masuk-pane" aria-selected="false">📥 Surat Masuk</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="persuratanTabContent">
+                            
+                            <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" aria-labelledby="keluar-tab" tabindex="0">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-9 col-lg-8">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <h4 class="fw-bold mb-0" style="color: #07213D;">Formulir Surat Keluar</h4>
+                                            <a href="Permen_Nomor8_Tahun2026.pdf" target="_blank" class="btn btn-sm btn-outline-danger fw-bold d-flex align-items-center gap-1">
+                                                Petunjuk Klasifikasi (PDF)
+                                            </a>
+                                        </div>
+                                        <form id="formSuratKeluar">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Jenis Surat</label>
+                                                <select id="jenisSurat" class="form-select" required>
+                                                    <option value="" disabled selected>-- Pilih Jenis Surat --</option>
+                                                    <option value="Surat Dinas">Surat Dinas</option>
+                                                    <option value="Surat Keputusan">Surat Keputusan</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Kategori Klasifikasi</label>
+                                                <select id="kategoriKlasifikasi" class="form-select" required onchange="updateSubKlasifikasi()">
+                                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                                    <option value="PR">PR (Perencanaan)</option>
+                                                    <option value="UM">UM (Umum)</option>
+                                                    <option value="KU">KU (Keuangan)</option>
+                                                    <option value="PK">PK (Pemasyarakatan)</option>
+                                                    <option value="OT">OT (Organisasi dan Tata Usaha)</option>
+                                                    <option value="SA">SA (SDM Aparatur)</option>
+                                                    <option value="PB">PB (Pengelolaan Barang Milik Negara)</option>
+                                                    <option value="KS">KS (Kerja Sama)</option>
+                                                    <option value="HK">HK (Hukum)</option>
+                                                    <option value="PS">PS (Pusat Strategi dan Informasi)</option>
+                                                    <option value="PW">PW (Pengawasan)</option>
+                                                    <option value="TI">TI (Teknologi dan Informasi)</option>
+                                                    <option value="SM">SM (SDM Imigrasi dan Pemasyarakatan)</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Sub Klasifikasi (Kode)</label>
+                                                <select id="subKlasifikasi" class="form-select" required>
+                                                    <option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Perihal Surat</label>
+                                                <input type="text" id="perihal" class="form-control" placeholder="Contoh: Undangan Rapat Internal" required>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold">Tujuan Surat</label>
+                                                <input type="text" id="tujuanSurat" class="form-control" placeholder="Contoh: Kanwil Ditjenpas Bengkulu" required>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-custom-primary w-100 fw-bold py-2.5" id="btnGenerate">
+                                                ✨ Generate Nomor & Simpan
+                                            </button>
+                                        </form>
+
+                                        <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
+                                            <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
+                                            <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="rekap-pane" role="tabpanel" aria-labelledby="rekap-tab" tabindex="0">
+                                <h4 class="mb-4 fw-bold text-center" style="color: #07213D;">📊 Data Rekapan Nomor Surat Keluar</h4>
+                                <div class="table-responsive">
+                                    <table id="tabelSuratKeluar" class="table table-striped table-bordered w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Tanggal Dibuat</th>
+                                                <th>Nomor Surat Lengkap</th>
+                                                <th>Jenis Surat</th>
+                                                <th>Kode Klasifikasi</th>
+                                                <th>Perihal</th>
+                                                <th>Tujuan Surat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyTabelSurat">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="masuk-pane" role="tabpanel" aria-labelledby="masuk-tab" tabindex="0">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-9 col-lg-8 text-center py-4 px-2">
+                                        <h4 class="mb-3 fw-bold" style="color: #07213D;">Digitalisasi Surat Masuk</h4>
+                                        
+                                        <div class="mb-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#07213D" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
+                                                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2z"/>
+                                            </svg>
+                                        </div>
+                                        
+                                        <p class="text-secondary mb-4">
+                                            Gunakan menu di bawah ini untuk mengunggah berkas surat masuk baru, atau melihat kumpulan dokumen surat masuk yang sudah diunggah sebelumnya.
+                                        </p>
+                                        
+                                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
+                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSezWirYleq0lo5733nwyPqi_YJAv-D0cxzHedIQSmb904sQzw/viewform" target="_blank" class="btn btn-custom-primary px-4 py-3 fw-bold">
+                                                📤 Buka & Isi Form Surat Masuk
+                                            </a>
+                                            
+                                            <a href="https://drive.google.com/drive/folders/10Qm1qdcCxgU-HAZFZ4VdgbIibhVs1cKj" target="_blank" class="btn btn-custom-secondary px-4 py-3 fw-bold">
+                                                📁 Lihat File Surat Masuk (Drive)
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="alert text-start border-0 shadow-none mb-0 mt-2" style="background-color: rgba(7, 33, 61, 0.05); color: #07213D; border-radius: 12px; border-left: 4px solid #EEBF63 !important;">
+                                            <span class="fw-bold d-block mb-1">📋 Petunjuk Operasional Lapas:</span>
+                                            <small class="d-block mb-1">1. Untuk mengunggah berkas baru, klik **Isi Form Surat Masuk**.</small>
+                                            <small class="d-block">2. Untuk memeriksa arsip berkas PDF yang telah di-upload rekan kerja, klik **Lihat File Surat Masuk**.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <script>
+        // Data Password untuk masing-masing Seksi (Bisa Anda ubah di sini)
+        const passwordSeksi = {
+            "Tata Usaha": "tu123",
+            "KPLP": "kplp123",
+            "Kamtib": "kamtib123",
+            "Binadik": "binadik123"
+        };
+
+        // Mengecek apakah sudah ada sesi login yang tersimpan
+        document.addEventListener("DOMContentLoaded", function() {
+            const sesiAktif = localStorage.getItem("loggedInSeksi");
+            if(sesiAktif) {
+                tampilkanAplikasiUtama(sesiAktif);
+            } else {
+                document.getElementById("login-container").classList.remove("d-none");
+            }
+        });
+
+        // Proses Login
+        document.getElementById("formLogin").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const seksi = document.getElementById("loginSeksi").value;
+            const password = document.getElementById("loginPassword").value;
+
+            if (passwordSeksi[seksi] && passwordSeksi[seksi] === password) {
+                // Login Berhasil
+                localStorage.setItem("loggedInSeksi", seksi);
+                document.getElementById("loginError").classList.add("d-none");
+                tampilkanAplikasiUtama(seksi);
+            } else {
+                // Login Gagal
+                document.getElementById("loginError").classList.remove("d-none");
+            }
+        });
+
+        // Proses Logout
+        document.getElementById("btnLogout").addEventListener("click", function() {
+            localStorage.removeItem("loggedInSeksi");
+            document.getElementById("main-app").classList.add("d-none");
+            document.getElementById("login-container").classList.remove("d-none");
+            document.getElementById("formLogin").reset();
+        });
+
+        // Fungsi Menampilkan Aplikasi
+        function tampilkanAplikasiUtama(namaSeksi) {
+            document.getElementById("login-container").classList.add("d-none");
+            document.getElementById("main-app").classList.remove("d-none");
+            document.getElementById("userAktif").innerText = namaSeksi;
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -320,32 +412,26 @@
 
         let dataTableInstance = null;
 
-        // Inisialisasi DataTable saat halaman dimuat
         $(document).ready(function() {
             dataTableInstance = $('#tabelSuratKeluar').DataTable({
-                "order": [[1, "desc"]], // Default urutkan dari tanggal terbaru
+                "order": [[1, "desc"]], 
                 "language": {
-                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" // Bahasa Indonesia
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" 
                 }
             });
-            
-            // Muat data tabel secara Realtime dari Firestore
             muatDataTabelSuratKeluar();
         });
 
-        // Fungsi Mengambil Data Surat Keluar & Memperbarui Tabel secara Otomatis (Real-time)
         function muatDataTabelSuratKeluar() {
             const q = query(collection(db, "surat_keluar"), orderBy("tanggal_dibuat", "desc"));
             
             onSnapshot(q, (snapshot) => {
-                // Bersihkan baris lama di instansi DataTable
                 dataTableInstance.clear();
                 
                 let nomorUrutBaris = 1;
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     
-                    // Format waktu tanggal_dibuat
                     let formatTanggal = "-";
                     if (data.tanggal_dibuat) {
                         const tgl = data.tanggal_dibuat.toDate();
@@ -355,7 +441,6 @@
                         }) + " WIB";
                     }
 
-                    // Masukkan baris data baru ke dalam DataTable
                     dataTableInstance.row.add([
                         nomorUrutBaris++,
                         formatTanggal,
@@ -367,14 +452,12 @@
                     ]);
                 });
                 
-                // Gambar ulang tabel setelah data selesai di-loop
                 dataTableInstance.draw();
             }, (error) => {
                 console.error("Gagal memuat rekap data: ", error);
             });
         }
 
-        // ================= LOGIKA SURAT KELUAR =================
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
             
@@ -388,6 +471,9 @@
                 const klasifikasi = document.getElementById("subKlasifikasi").value;
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
+                
+                // Mengambil Data Seksi yang Sedang Login untuk direkam
+                const seksiPembuat = localStorage.getItem("loggedInSeksi") || "Tidak Diketahui";
 
                 const counterId = `${tahunIni}_${klasifikasi}`;
                 const counterRef = doc(db, "counter_penomoran", counterId);
@@ -419,6 +505,7 @@
                     nomor_surat_lengkap: nomorLengkap,
                     perihal: perihal,
                     tujuan_surat: tujuan,
+                    seksi_pembuat: seksiPembuat, // Menyimpan info admin seksi mana yang membuat
                     tanggal_dibuat: serverTimestamp()
                 });
 
@@ -791,14 +878,13 @@
             const kategori = document.getElementById("kategoriKlasifikasi").value;
             const subSelect = document.getElementById("subKlasifikasi");
             
-            // Reset dropdown setiap kali kategori utama diubah
             subSelect.innerHTML = '<option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>';
             
             if (kategori && dataKlasifikasi[kategori]) {
                 dataKlasifikasi[kategori].forEach(function(sub) {
                     const option = document.createElement("option");
-                    option.value = sub.value; // Data pendek yang dikirim ke sistem Firebase
-                    option.text = sub.text;   // Data detail yang terlihat oleh pengguna form
+                    option.value = sub.value; 
+                    option.text = sub.text;  
                     subSelect.appendChild(option);
                 });
             }
