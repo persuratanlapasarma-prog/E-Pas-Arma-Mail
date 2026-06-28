@@ -23,7 +23,7 @@
         }
         
         .navbar-custom { 
-            background-color: rgba(7, 33, 61, 0.95); 
+            background-color: rgba(7, 33, 61, 0.95);
             border-bottom: 4px solid #EEBF63;
             backdrop-filter: blur(5px);
         }
@@ -35,7 +35,7 @@
         }
 
         .card { 
-            border-radius: 16px; 
+            border-radius: 16px;
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); 
             border: none;
             background-color: rgba(255, 255, 255, 0.98);
@@ -45,7 +45,7 @@
             border-bottom: 2px solid rgba(7, 33, 61, 0.1);
         }
         .nav-tabs .nav-link { 
-            color: #07213D; 
+            color: #07213D;
             border: none;
             font-weight: 600;
             padding: 10px 20px;
@@ -58,7 +58,7 @@
             color: #07213D;
         }
         .nav-tabs .nav-link.active { 
-            color: #ffffff !important; 
+            color: #ffffff !important;
             background-color: #07213D !important;
             border: none;
             box-shadow: 0 -4px 10px rgba(7, 33, 61, 0.15);
@@ -150,7 +150,7 @@
                 <h4 class="fw-bold mb-1" style="color: #07213D;">Login e-PAS</h4>
                 <p class="text-secondary small">Persuratan Lapas Arga Makmur</p>
             </div>
-            
+         
             <form id="formLogin">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Seksi / Bagian</label>
@@ -170,7 +170,7 @@
             </form>
             
             <div id="loginError" class="alert alert-danger mt-3 d-none small text-center mb-0">
-                Password salah! Silakan coba lagi.
+               Password salah! Silakan coba lagi.
             </div>
         </div>
     </div>
@@ -187,12 +187,11 @@
                 </a>
                 
                <div class="d-flex align-items-center ms-auto">
-    <button class="btn btn-link text-light text-decoration-none me-3" 
-            onclick="bukaModalProfil()">
-        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
-    </button>
-    <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold">🚪 Keluar</button>
-</div>
+                    <button class="btn btn-link text-light text-decoration-none me-3" onclick="bukaModalProfil()">
+                        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
+                    </button>
+                    <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold">🚪 Keluar</button>
+                </div>
             </div>
         </nav>
 
@@ -214,7 +213,6 @@
                         </ul>
 
                         <div class="tab-content" id="persuratanTabContent">
-                            
                             <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" aria-labelledby="keluar-tab" tabindex="0">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 col-lg-8">
@@ -344,8 +342,39 @@
                 </div>
             </div>
         </div>
-    </div> <script>
-        // Data Password untuk masing-masing Seksi (Bisa Anda ubah di sini)
+    </div> 
+
+    <div class="modal fade" id="modalProfil" tabindex="-1" aria-labelledby="modalProfilLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #07213D; color: white;">
+                    <h5 class="modal-title fw-bold" id="modalProfilLabel">Pengaturan Keamanan Akun</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formGantiPassword">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Password Baru</label>
+                            <input type="password" id="passBaru" class="form-control" placeholder="Masukkan password baru">
+                            <div id="infoPass" class="mt-1"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark">Konfirmasi Password Baru</label>
+                            <input type="password" id="passKonfirmasi" class="form-control" placeholder="Ketik ulang password baru">
+                            <div id="infoKonfir" class="mt-1"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-custom-primary" id="btnSimpanPassword">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Password untuk masing-masing Seksi
         const passwordSeksi = {
             "Tata Usaha": "tu123",
             "KPLP": "kplp123",
@@ -353,7 +382,6 @@
             "Binadik": "binadik123"
         };
 
-        // Mengecek apakah sudah ada sesi login yang tersimpan
         document.addEventListener("DOMContentLoaded", function() {
             const sesiAktif = localStorage.getItem("loggedInSeksi");
             if(sesiAktif) {
@@ -370,12 +398,10 @@
             const password = document.getElementById("loginPassword").value;
 
             if (passwordSeksi[seksi] && passwordSeksi[seksi] === password) {
-                // Login Berhasil
                 localStorage.setItem("loggedInSeksi", seksi);
                 document.getElementById("loginError").classList.add("d-none");
                 tampilkanAplikasiUtama(seksi);
             } else {
-                // Login Gagal
                 document.getElementById("loginError").classList.remove("d-none");
             }
         });
@@ -383,12 +409,9 @@
         // Proses Logout
         document.getElementById("btnLogout").addEventListener("click", function() {
             localStorage.removeItem("loggedInSeksi");
-            document.getElementById("main-app").classList.add("d-none");
-            document.getElementById("login-container").classList.remove("d-none");
-            document.getElementById("formLogin").reset();
+            window.location.reload(); 
         });
 
-        // Fungsi Menampilkan Aplikasi
         function tampilkanAplikasiUtama(namaSeksi) {
             document.getElementById("login-container").classList.add("d-none");
             document.getElementById("main-app").classList.remove("d-none");
@@ -399,7 +422,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
+        
         const firebaseConfig = {
             apiKey: "AIzaSyDa_o2vtwg8BhCZHqYW18ALx6d-IMJtN6A",
             authDomain: "epas-persuratan-arma.firebaseapp.com",
@@ -428,7 +451,6 @@
 
         function muatDataTabelSuratKeluar() {
             const q = query(collection(db, "surat_keluar"), orderBy("tanggal_dibuat", "desc"));
-            
             onSnapshot(q, (snapshot) => {
                 dataTableInstance.clear();
                 
@@ -475,8 +497,6 @@
                 const klasifikasi = document.getElementById("subKlasifikasi").value;
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
-                
-                // Mengambil Data Seksi yang Sedang Login untuk direkam
                 const seksiPembuat = localStorage.getItem("loggedInSeksi") || "Tidak Diketahui";
 
                 const counterId = `${tahunIni}_${klasifikasi}`;
@@ -488,8 +508,8 @@
                     nomorTerakhir = counterSnap.data().angka_terakhir;
                 }
                 const nomorBaru = nomorTerakhir + 1;
-
                 let nomorLengkap = "";
+                
                 if (jenisSurat === "Surat Dinas") {
                     nomorLengkap = `W8.PAS3.${klasifikasi}.${nomorBaru}`;
                 } else if (jenisSurat === "Surat Keputusan") {
@@ -501,7 +521,7 @@
                     klasifikasi: klasifikasi,
                     angka_terakhir: nomorBaru
                 });
-
+                
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat,
                     kode_klasifikasi: klasifikasi,
@@ -509,10 +529,10 @@
                     nomor_surat_lengkap: nomorLengkap,
                     perihal: perihal,
                     tujuan_surat: tujuan,
-                    seksi_pembuat: seksiPembuat, // Menyimpan info admin seksi mana yang membuat
+                    seksi_pembuat: seksiPembuat,
                     tanggal_dibuat: serverTimestamp()
                 });
-
+                
                 document.getElementById("teksNomorSurat").innerText = nomorLengkap;
                 document.getElementById("hasilGenerate").classList.remove("d-none");
                 document.getElementById("formSuratKeluar").reset();
@@ -672,7 +692,7 @@
                 { value: "PB.03.01", text: "PB.03.01 (Penggunaan Barang Milik Negara)" },
                 { value: "PB.03.02", text: "PB.03.02 (Barang Milik Negara Bernilai Sejarah)" },
                 { value: "PB.03.03", text: "PB.03.03 (Pemanfaatan Barang Milik Negara)" },
-                { value: "PB.03.04", text: "PB.03.04 (Permasalahan Barang Milik Negara dan Berkas Pengamanan dan Pemeliharaan)" },
+                { value: "PB.03.04", text: "PB.03.04 (Permasalahan Barang Milik Negara dan Berkas Pengamanan dan Pem Pemeliharaan)" },
                 { value: "PB.03.05", text: "PB.03.05 (Rumah Negara)" },
                 { value: "PB.04.01", text: "PB.04.01 (Pencatataan Barang Milik Negara)" },
                 { value: "PB.04.02", text: "PB.04.02 (Inventarisasi)" },
@@ -893,86 +913,43 @@
                 });
             }
         }
+    </script>
+    
     <script>
-    // --- LOGIKA PROFIL & PASSWORD ---
-    function bukaModalProfil() {
-        const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
-        modal.show();
-    }
-
-    // Validasi Password Realtime
-    const passBaru = document.getElementById('passBaru');
-    const passKonfir = document.getElementById('passKonfirmasi');
-    const infoPass = document.getElementById('infoPass');
-    const infoKonfir = document.getElementById('infoKonfir');
-
-    passBaru.addEventListener('input', () => {
-        // Regex: 8 karakter, 1 huruf besar, 1 huruf kecil
-        const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        if (passBaru.value === "") {
-            infoPass.innerText = "";
-        } else if (regex.test(passBaru.value)) {
-            infoPass.innerText = "✓ Password Kuat";
-            infoPass.className = "text-success small fw-bold";
-        } else {
-            infoPass.innerText = "X Minimal 8 karakter, 1 huruf besar & 1 kecil";
-            infoPass.className = "text-danger small fw-bold";
+        function bukaModalProfil() {
+            const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
+            modal.show();
         }
-    });
 
-    passKonfir.addEventListener('input', () => {
-        if (passKonfir.value === "") {
-            infoKonfir.innerText = "";
-        } else if (passKonfir.value === passBaru.value) {
-            infoKonfir.innerText = "✓ Password sesuai";
-            infoKonfir.className = "text-success small fw-bold";
-        } else {
-            infoKonfir.innerText = "X Password tidak sama";
-            infoKonfir.className = "text-danger small fw-bold";
-        }
-    });
+        const passBaru = document.getElementById('passBaru');
+        const passKonfir = document.getElementById('passKonfirmasi');
+        const infoPass = document.getElementById('infoPass');
+        const infoKonfir = document.getElementById('infoKonfir');
 
-    // --- LOGIKA LOGIN/LOGOUT ---
-    const passwordSeksi = {
-        "Tata Usaha": "tu123",
-        "KPLP": "kplp123",
-        "Kamtib": "kamtib123",
-        "Binadik": "binadik123"
-    };
+        passBaru.addEventListener('input', () => {
+            const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (passBaru.value === "") {
+                infoPass.innerText = "";
+            } else if (regex.test(passBaru.value)) {
+                infoPass.innerText = "✓ Password Kuat";
+                infoPass.className = "text-success small fw-bold";
+            } else {
+                infoPass.innerText = "X Minimal 8 karakter, 1 huruf besar & 1 kecil";
+                infoPass.className = "text-danger small fw-bold";
+            }
+        });
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const sesiAktif = localStorage.getItem("loggedInSeksi");
-        if(sesiAktif) {
-            tampilkanAplikasiUtama(sesiAktif);
-        } else {
-            document.getElementById("login-container").classList.remove("d-none");
-        }
-    });
-
-    document.getElementById("formLogin").addEventListener("submit", function(event) {
-        event.preventDefault();
-        const seksi = document.getElementById("loginSeksi").value;
-        const password = document.getElementById("loginPassword").value;
-
-        if (passwordSeksi[seksi] && passwordSeksi[seksi] === password) {
-            localStorage.setItem("loggedInSeksi", seksi);
-            document.getElementById("loginError").classList.add("d-none");
-            tampilkanAplikasiUtama(seksi);
-        } else {
-            document.getElementById("loginError").classList.remove("d-none");
-        }
-    });
-
-    document.getElementById("btnLogout").addEventListener("click", function() {
-        localStorage.removeItem("loggedInSeksi");
-        window.location.reload(); // Refresh halaman untuk kembali ke login
-    });
-
-    function tampilkanAplikasiUtama(namaSeksi) {
-        document.getElementById("login-container").classList.add("d-none");
-        document.getElementById("main-app").classList.remove("d-none");
-        document.getElementById("userAktif").innerText = namaSeksi;
-    }
-</script>
+        passKonfir.addEventListener('input', () => {
+            if (passKonfir.value === "") {
+                infoKonfir.innerText = "";
+            } else if (passKonfir.value === passBaru.value) {
+                infoKonfir.innerText = "✓ Password sesuai";
+                infoKonfir.className = "text-success small fw-bold";
+            } else {
+                infoKonfir.innerText = "X Password tidak sama";
+                infoKonfir.className = "text-danger small fw-bold";
+            }
+        });
+    </script>
 </body>
 </html>
