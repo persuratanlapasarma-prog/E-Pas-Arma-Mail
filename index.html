@@ -186,12 +186,13 @@
                     </div>
                 </a>
                 
-                <div class="d-flex align-items-center ms-auto">
-                    <span class="text-light me-3 d-none d-md-block" style="font-size: 0.9rem;">
-                        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
-                    </span>
-                    <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold" style="border-radius: 6px;">🚪 Keluar</button>
-                </div>
+               <div class="d-flex align-items-center ms-auto">
+    <button class="btn btn-link text-light text-decoration-none me-3" 
+            onclick="bukaModalProfil()">
+        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
+    </button>
+    <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold">🚪 Keluar</button>
+</div>
             </div>
         </nav>
 
@@ -892,6 +893,86 @@
                 });
             }
         }
-    </script>
+    <script>
+    // --- LOGIKA PROFIL & PASSWORD ---
+    function bukaModalProfil() {
+        const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
+        modal.show();
+    }
+
+    // Validasi Password Realtime
+    const passBaru = document.getElementById('passBaru');
+    const passKonfir = document.getElementById('passKonfirmasi');
+    const infoPass = document.getElementById('infoPass');
+    const infoKonfir = document.getElementById('infoKonfir');
+
+    passBaru.addEventListener('input', () => {
+        // Regex: 8 karakter, 1 huruf besar, 1 huruf kecil
+        const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        if (passBaru.value === "") {
+            infoPass.innerText = "";
+        } else if (regex.test(passBaru.value)) {
+            infoPass.innerText = "✓ Password Kuat";
+            infoPass.className = "text-success small fw-bold";
+        } else {
+            infoPass.innerText = "X Minimal 8 karakter, 1 huruf besar & 1 kecil";
+            infoPass.className = "text-danger small fw-bold";
+        }
+    });
+
+    passKonfir.addEventListener('input', () => {
+        if (passKonfir.value === "") {
+            infoKonfir.innerText = "";
+        } else if (passKonfir.value === passBaru.value) {
+            infoKonfir.innerText = "✓ Password sesuai";
+            infoKonfir.className = "text-success small fw-bold";
+        } else {
+            infoKonfir.innerText = "X Password tidak sama";
+            infoKonfir.className = "text-danger small fw-bold";
+        }
+    });
+
+    // --- LOGIKA LOGIN/LOGOUT ---
+    const passwordSeksi = {
+        "Tata Usaha": "tu123",
+        "KPLP": "kplp123",
+        "Kamtib": "kamtib123",
+        "Binadik": "binadik123"
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const sesiAktif = localStorage.getItem("loggedInSeksi");
+        if(sesiAktif) {
+            tampilkanAplikasiUtama(sesiAktif);
+        } else {
+            document.getElementById("login-container").classList.remove("d-none");
+        }
+    });
+
+    document.getElementById("formLogin").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const seksi = document.getElementById("loginSeksi").value;
+        const password = document.getElementById("loginPassword").value;
+
+        if (passwordSeksi[seksi] && passwordSeksi[seksi] === password) {
+            localStorage.setItem("loggedInSeksi", seksi);
+            document.getElementById("loginError").classList.add("d-none");
+            tampilkanAplikasiUtama(seksi);
+        } else {
+            document.getElementById("loginError").classList.remove("d-none");
+        }
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", function() {
+        localStorage.removeItem("loggedInSeksi");
+        window.location.reload(); // Refresh halaman untuk kembali ke login
+    });
+
+    function tampilkanAplikasiUtama(namaSeksi) {
+        document.getElementById("login-container").classList.add("d-none");
+        document.getElementById("main-app").classList.remove("d-none");
+        document.getElementById("userAktif").innerText = namaSeksi;
+    }
+</script>
 </body>
 </html>
