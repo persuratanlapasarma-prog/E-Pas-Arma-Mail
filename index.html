@@ -192,10 +192,16 @@
                                             </button>
                                         </form>
 
-                                        <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
-                                            <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
-                                            <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0"></h3>
-                                        </div>
+                                       <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
+    <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
+    <div class="d-flex justify-content-center align-items-center gap-2">
+        <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0" style="user-select: all; cursor: copy;" title="Blok untuk menyalin"></h3>
+        
+        <button type="button" id="btnSalinTeks" class="btn btn-sm btn-outline-secondary fw-bold" onclick="window.salinNomorManual()">
+            📋 Salin
+        </button>
+    </div>
+</div>
                                     </div>
                                 </div>
                             </div>
