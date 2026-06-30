@@ -496,8 +496,8 @@
                 const nomorBaru = nomorTerakhir + 1;
                 let nomorLengkap = "";
                 
-                if (jenisSurat === "Surat Dinas") nomorLengkap = `W8.PAS3.${klasifikasi}.${nomorBaru}`;
-                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `W8.PAS3.${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+                if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS3.${klasifikasi}.${nomorBaru}`;
+                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
 
                 await setDoc(counterRef, { tahun: tahunIni, klasifikasi: klasifikasi, angka_terakhir: nomorBaru });
                 await addDoc(collection(db, "surat_keluar"), {
