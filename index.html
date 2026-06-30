@@ -61,7 +61,8 @@
 </head>
 <body>
 
-    <div id="login-container" class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <!-- CONTAINER LOGIN (Menggunakan Google Sign-In) -->
+    <div id="login-container" class="container d-flex align-items-center justify-content-center d-none" style="min-height: 100vh;">
         <div class="card p-4 p-sm-5" style="max-width: 420px; width: 100%;">
             <div class="text-center mb-4">
                 <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
@@ -72,30 +73,19 @@
                 <p class="text-secondary small">Persuratan Lapas Arga Makmur</p>
             </div>
             
-            <form id="formLogin">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Seksi / Bagian</label>
-                    <select id="loginSeksi" class="form-select" required>
-                        <option value="" disabled selected>-- Pilih Seksi Anda --</option>
-                        <option value="Tata Usaha">Subbag Tata Usaha</option>
-                        <option value="KPLP">KPLP</option>
-                        <option value="Kamtib">Kamtib</option>
-                        <option value="Binadik">Binadik</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fw-bold">Password</label>
-                    <input type="password" id="loginPassword" class="form-control" placeholder="Masukkan password" required>
-                </div>
-                <button type="submit" id="btnLoginBtn" class="btn btn-custom-primary w-100 fw-bold py-2">🔒 Masuk</button>
-            </form>
+            <!-- Tombol Login Google Baru -->
+            <button id="btnGoogleLogin" class="btn w-100 fw-bold py-2.5 d-flex align-items-center justify-content-center gap-2" style="background-color: #ffffff; color: #5f6368; border: 1px solid #dadce0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: background-color 0.2s;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="20" height="20">
+                Masuk dengan Google
+            </button>
             
             <div id="loginError" class="alert alert-danger mt-3 d-none small text-center mb-0">
-                Password salah! Silakan coba lagi.
+                Gagal masuk menggunakan Google. Silakan coba kembali.
             </div>
         </div>
     </div>
 
+    <!-- APLIKASI UTAMA -->
     <div id="main-app" class="d-none">
         
         <nav class="navbar navbar-dark navbar-custom mb-5 shadow-sm">
@@ -112,7 +102,7 @@
                     <button id="btnBukaProfil" class="btn btn-link text-light text-decoration-none me-4 p-0 d-flex align-items-center gap-2">
                         <img src="https://via.placeholder.com/150" id="navFotoProfil" class="nav-profile-img" alt="Profil">
                         <span class="d-none d-md-inline text-start lh-sm">
-                            <small class="d-block text-white-50" style="font-size: 0.75rem;">Seksi / Bagian</small>
+                            <small class="d-block text-white-50" style="font-size: 0.75rem;">Pengguna Aktif</small>
                             <b id="userAktif" style="color: #EEBF63;">Admin</b>
                         </span>
                     </button>
@@ -264,6 +254,7 @@
         </div>
     </div> 
 
+    <!-- MODAL PROFIL (Hanya Informasi Pegawai, password dihapus karena menggunakan Google Auth) -->
     <div class="modal fade" id="modalProfil" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -291,25 +282,8 @@
                                     <input type="number" id="nipUser" class="form-control" placeholder="Angka NIP">
                                 </div>
                                 <div>
-                                    <label class="small fw-bold form-label">Jabatan</label>
-                                    <input type="text" id="jabatanUser" class="form-control" placeholder="Jabatan/Pangkat">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="p-3 rounded mb-4" style="background-color: rgba(7, 33, 61, 0.05); border: 1px solid rgba(7, 33, 61, 0.1);">
-                            <h6 class="fw-bold mb-3" style="color: #07213D;">🔒 Ubah Password <span class="fw-normal small text-muted">(Kosongkan jika tidak ingin mengubah)</span></h6>
-                            <div class="mb-3">
-                                <input type="password" id="passLama" class="form-control" placeholder="Password Lama">
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <input type="password" id="passBaru" class="form-control" placeholder="Password Baru">
-                                    <div id="infoPass" class="mt-1" style="min-height: 20px;"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="password" id="passKonfirmasi" class="form-control" placeholder="Konfirmasi Password Baru">
-                                    <div id="infoKonfir" class="mt-1" style="min-height: 20px;"></div>
+                                    <label class="small fw-bold form-label">Jabatan / Seksi</label>
+                                    <input type="text" id="jabatanUser" class="form-control" placeholder="Contoh: Kaur Kepegawaian / KPLP">
                                 </div>
                             </div>
                         </div>
@@ -327,6 +301,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // Import Modul Auth Tambahan
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         // Konfigurasi Firebase
         const firebaseConfig = {
@@ -342,90 +318,80 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        // State Global & Password Default
-        let seksiAktifSekarang = "";
-        const defaultPasswords = { "Tata Usaha": "tu123", "KPLP": "kplp123", "Kamtib": "kamtib123", "Binadik": "binadik123" };
-        let passwordSaatIni = ""; 
+        // State Global
+        let emailAktifSekarang = "";
 
-        // --- CEK SESI LOGIN SAAT HALAMAN DIMUAT ---
-        document.addEventListener("DOMContentLoaded", function() {
-            const sesiAktif = localStorage.getItem("loggedInSeksi");
-            if(sesiAktif) {
-                tampilkanAplikasiUtama(sesiAktif);
+        // --- CEK DAN MONITOR STATUS AUTENTIKASI ---
+        onAuthStateChanged(auth, function(user) {
+            if (user) {
+                tampilkanAplikasiUtama(user);
             } else {
+                document.getElementById("main-app").classList.add("d-none");
                 document.getElementById("login-container").classList.remove("d-none");
             }
         });
 
-        // --- LOGIKA LOGIN (Validasi lewat Firestore) ---
-        document.getElementById("formLogin").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const seksi = document.getElementById("loginSeksi").value;
-            const passwordInput = document.getElementById("loginPassword").value;
-            const btnLogin = document.getElementById("btnLoginBtn");
-
-            btnLogin.innerHTML = "Memeriksa Data...";
+        // --- LOGIKA LOGIN MENGGUNAKAN GOOGLE ---
+        document.getElementById("btnGoogleLogin").addEventListener("click", async function() {
+            const btnLogin = document.getElementById("btnGoogleLogin");
+            btnLogin.innerHTML = "Menghubungkan...";
             btnLogin.disabled = true;
 
             try {
-                const docRef = doc(db, "user_profiles", seksi);
-                const docSnap = await getDoc(docRef);
-                
-                let isPasswordValid = false;
-
-                if (docSnap.exists() && docSnap.data().password) {
-                    if (docSnap.data().password === passwordInput) {
-                        isPasswordValid = true;
-                        passwordSaatIni = docSnap.data().password;
-                    }
-                } else {
-                    if (defaultPasswords[seksi] === passwordInput) {
-                        isPasswordValid = true;
-                        passwordSaatIni = defaultPasswords[seksi];
-                    }
-                }
-
-                if (isPasswordValid) {
-                    localStorage.setItem("loggedInSeksi", seksi);
-                    document.getElementById("loginError").classList.add("d-none");
-                    tampilkanAplikasiUtama(seksi);
-                } else {
-                    document.getElementById("loginError").classList.remove("d-none");
-                }
+                await signInWithPopup(auth, provider);
+                document.getElementById("loginError").classList.add("d-none");
             } catch (error) {
-                alert("Gagal koneksi ke database: " + error.message);
-            } finally {
-                btnLogin.innerHTML = "🔒 Masuk";
+                console.error("Login gagal: ", error);
+                document.getElementById("loginError").innerText = "Gagal Masuk: " + error.message;
+                document.getElementById("loginError").classList.remove("d-none");
+                btnLogin.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="20" height="20"> Masuk dengan Google`;
                 btnLogin.disabled = false;
             }
         });
 
         // --- LOGIKA LOGOUT ---
-        document.getElementById("btnLogout").addEventListener("click", function() {
-            localStorage.removeItem("loggedInSeksi");
-            window.location.reload(); 
+        document.getElementById("btnLogout").addEventListener("click", async function() {
+            try {
+                await signOut(auth);
+                window.location.reload();
+            } catch (error) {
+                alert("Gagal keluar sesi: " + error.message);
+            }
         });
 
-        // --- LOGIKA TAMPILAN UTAMA (Load Navbar) ---
-        async function tampilkanAplikasiUtama(namaSeksi) {
-            seksiAktifSekarang = namaSeksi;
+        // --- LOGIKA TAMPILAN UTAMA & GET/SET PROFIL KEUANGAN ---
+        async function tampilkanAplikasiUtama(user) {
+            emailAktifSekarang = user.email;
             document.getElementById("login-container").classList.add("d-none");
             document.getElementById("main-app").classList.remove("d-none");
-            document.getElementById("userAktif").innerText = namaSeksi;
+            
+            // Tampilan default instan berdasarkan akun Google
+            document.getElementById("userAktif").innerText = user.displayName || user.email;
+            document.getElementById("navFotoProfil").src = user.photoURL || "https://via.placeholder.com/150";
 
             try {
-                const docRef = doc(db, "user_profiles", namaSeksi);
+                // Dokumen dicari berdasarkan Email Google unik pengguna
+                const docRef = doc(db, "user_profiles", emailAktifSekarang);
                 const docSnap = await getDoc(docRef);
+                
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     if(data.nama) document.getElementById("userAktif").innerText = data.nama;
                     if(data.fotoBase64) document.getElementById("navFotoProfil").src = data.fotoBase64;
-                    if(data.password) passwordSaatIni = data.password; 
-                    else passwordSaatIni = defaultPasswords[namaSeksi];
+                } else {
+                    // Jika login pertama kali, buat salinan profil default di Firestore
+                    await setDoc(docRef, {
+                        nama: user.displayName,
+                        email: user.email,
+                        fotoBase64: user.photoURL,
+                        terakhirDiupdate: new Date().toISOString()
+                    }, { merge: true });
                 }
             } catch (e) {
-                console.error("Gagal memuat profil UI: ", e);
+                console.error("Gagal memuat profil UI dari Firestore: ", e);
             }
         }
 
@@ -434,19 +400,13 @@
         // ======================================================================
 
         document.getElementById("btnBukaProfil").addEventListener("click", async function() {
-            if(!seksiAktifSekarang) return;
+            if(!emailAktifSekarang) return;
             
             const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
             modal.show();
 
-            document.getElementById('passLama').value = "";
-            document.getElementById('passBaru').value = "";
-            document.getElementById('passKonfirmasi').value = "";
-            document.getElementById('infoPass').innerText = "";
-            document.getElementById('infoKonfir').innerText = "";
-
             try {
-                const docRef = doc(db, "user_profiles", seksiAktifSekarang);
+                const docRef = doc(db, "user_profiles", emailAktifSekarang);
                 const docSnap = await getDoc(docRef);
                 
                 if (docSnap.exists()) {
@@ -475,46 +435,14 @@
             }
         });
 
-        const passBaru = document.getElementById('passBaru');
-        const passKonfir = document.getElementById('passKonfirmasi');
-        const infoPass = document.getElementById('infoPass');
-        const infoKonfir = document.getElementById('infoKonfir');
-
-        passBaru.addEventListener('input', () => {
-            const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-            if (passBaru.value === "") { infoPass.innerHTML = ""; } 
-            else if (regex.test(passBaru.value)) {
-                infoPass.innerHTML = "✅ Kekuatan password sesuai standar";
-                infoPass.className = "text-success small fw-bold mt-1";
-            } else {
-                infoPass.innerHTML = "❌ Minimal 8 karakter, 1 huruf besar & 1 kecil";
-                infoPass.className = "text-danger small fw-bold mt-1";
-            }
-            if (passKonfir.value !== "") passKonfir.dispatchEvent(new Event('input'));
-        });
-
-        passKonfir.addEventListener('input', () => {
-            if (passKonfir.value === "") { infoKonfir.innerHTML = ""; } 
-            else if (passKonfir.value === passBaru.value) {
-                infoKonfir.innerHTML = "✅ Password sesuai";
-                infoKonfir.className = "text-success small fw-bold mt-1";
-            } else {
-                infoKonfir.innerHTML = "❌ Password tidak sama";
-                infoKonfir.className = "text-danger small fw-bold mt-1";
-            }
-        });
-
         document.getElementById('btnSimpanProfil').addEventListener('click', async function() {
             const btn = this;
-            if (!seksiAktifSekarang) { alert("Sesi tidak valid, login ulang."); return; }
+            if (!emailAktifSekarang) { alert("Sesi tidak valid, silakan login ulang."); return; }
 
             const nama = document.getElementById('namaUser').value;
             const nip = document.getElementById('nipUser').value;
             const jabatan = document.getElementById('jabatanUser').value;
             const foto = document.getElementById('fotoPreview').src;
-            
-            const passLamaInput = document.getElementById('passLama').value;
-            const passBaruInput = document.getElementById('passBaru').value;
 
             btn.innerHTML = "⏳ Sedang Menyimpan...";
             btn.disabled = true;
@@ -528,25 +456,8 @@
                     terakhirDiupdate: new Date().toISOString()
                 };
 
-                if (passLamaInput || passBaruInput) {
-                    if (passLamaInput !== passwordSaatIni) {
-                        alert("❌ Password Lama yang Anda masukkan salah!");
-                        btn.innerHTML = "💾 Simpan Perubahan Profil";
-                        btn.disabled = false;
-                        return;
-                    }
-                    if (infoPass.innerText.includes("❌") || infoKonfir.innerText.includes("❌") || passBaruInput === "") {
-                        alert("❌ Format password baru belum sesuai standar atau konfirmasi salah!");
-                        btn.innerHTML = "💾 Simpan Perubahan Profil";
-                        btn.disabled = false;
-                        return;
-                    }
-                    dataUpdate.password = passBaruInput;
-                    passwordSaatIni = passBaruInput; 
-                }
-
-                await setDoc(doc(db, "user_profiles", seksiAktifSekarang), dataUpdate, { merge: true });
-                alert("✅ Profil berhasil diperbarui & disimpan di Cloud!");
+                await setDoc(doc(db, "user_profiles", emailAktifSekarang), dataUpdate, { merge: true });
+                alert("✅ Profil berhasil diperbarui!");
 
                 if(nama) document.getElementById("userAktif").innerText = nama;
                 if(foto && !foto.includes("via.placeholder")) document.getElementById("navFotoProfil").src = foto;
@@ -565,7 +476,7 @@
 
 
         // ======================================================================
-        // LOGIKA TABEL REKAP & FORM SURAT KELUAR (BERDASARKAN KATEGORI)
+        // LOGIKA TABEL REKAP & FORM SURAT KELUAR
         // ======================================================================
         
         let dataTableInstance = null;
@@ -605,7 +516,6 @@
             }, (error) => { console.error("Gagal memuat rekap data surat: ", error); });
         }
 
-        // PERBAIKAN: Penomoran berurutan mandiri per-kategori utama (Contoh: PK, UM, KU)
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
             const btn = document.getElementById("btnGenerate");
@@ -615,13 +525,14 @@
             try {
                 const tahunIni = new Date().getFullYear();
                 const jenisSurat = document.getElementById("jenisSurat").value;
-                const kategoriUtama = document.getElementById("kategoriKlasifikasi").value; // Mengambil kategori utama (contoh: PK)
-                const klasifikasi = document.getElementById("subKlasifikasi").value; // Mengambil sub kode lengkap (contoh: PK.02.01)
+                const kategoriUtama = document.getElementById("kategoriKlasifikasi").value;
+                const klasifikasi = document.getElementById("subKlasifikasi").value;
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
-                const seksiPembuat = seksiAktifSekarang || "Tidak Diketahui";
+                
+                // Pembuat dicatat berdasarkan Nama/Email yang sedang Login
+                const seksiPembuat = document.getElementById("userAktif").innerText || emailAktifSekarang;
 
-                // PERBAIKAN: ID Dokumen diatur berdasarkan 'kategoriUtama' agar urutan berlanjut untuk seluruh rumpun kode yang sama
                 const counterRef = doc(db, "counter_penomoran", kategoriUtama);
                 const counterSnap = await getDoc(counterRef);
                 
@@ -639,13 +550,11 @@
                     nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
                 }
 
-                // Simpan/update angka terakhir khusus untuk Kategori Utama ini
                 await setDoc(counterRef, {
                     kategori: kategoriUtama,
                     angka_terakhir: nomorBaru
                 }, { merge: true });
 
-                // Menyimpan log log data surat keluar
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat,
                     kode_klasifikasi: klasifikasi, 
@@ -675,7 +584,6 @@
             window.updateSubKlasifikasi();
         });
     </script>
-
 
     <script>
         const dataKlasifikasi = {
