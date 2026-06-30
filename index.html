@@ -346,7 +346,7 @@
         // State Global & Password Default
         let seksiAktifSekarang = "";
         const defaultPasswords = { "Tata Usaha": "tu123", "KPLP": "kplp123", "Kamtib": "kamtib123", "Binadik": "binadik123" };
-        let passwordSaatIni = ""; // Menyimpan password yang lolos validasi saat login
+        let passwordSaatIni = ""; 
 
         // --- CEK SESI LOGIN SAAT HALAMAN DIMUAT ---
         document.addEventListener("DOMContentLoaded", function() {
@@ -374,14 +374,12 @@
                 
                 let isPasswordValid = false;
 
-                // Jika profil sudah ada di Firebase dan punya password khusus
                 if (docSnap.exists() && docSnap.data().password) {
                     if (docSnap.data().password === passwordInput) {
                         isPasswordValid = true;
                         passwordSaatIni = docSnap.data().password;
                     }
                 } else {
-                    // Cek menggunakan password default bawaan sistem
                     if (defaultPasswords[seksi] === passwordInput) {
                         isPasswordValid = true;
                         passwordSaatIni = defaultPasswords[seksi];
@@ -416,7 +414,6 @@
             document.getElementById("main-app").classList.remove("d-none");
             document.getElementById("userAktif").innerText = namaSeksi;
 
-            // Tarik data nama dan foto dari Firestore untuk Navbar
             try {
                 const docRef = doc(db, "user_profiles", namaSeksi);
                 const docSnap = await getDoc(docRef);
@@ -424,7 +421,6 @@
                     const data = docSnap.data();
                     if(data.nama) document.getElementById("userAktif").innerText = data.nama;
                     if(data.fotoBase64) document.getElementById("navFotoProfil").src = data.fotoBase64;
-                    // Amankan password ke memori saat muat
                     if(data.password) passwordSaatIni = data.password; 
                     else passwordSaatIni = defaultPasswords[namaSeksi];
                 }
@@ -437,22 +433,18 @@
         // LOGIKA MODAL PROFIL & PENYIMPANAN KE FIREBASE
         // ======================================================================
 
-        // 1. Membuka Modal & Menarik Data dari Firestore
         document.getElementById("btnBukaProfil").addEventListener("click", async function() {
             if(!seksiAktifSekarang) return;
             
-            // Tampilkan Modal
             const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
             modal.show();
 
-            // Bersihkan field password
             document.getElementById('passLama').value = "";
             document.getElementById('passBaru').value = "";
             document.getElementById('passKonfirmasi').value = "";
             document.getElementById('infoPass').innerText = "";
             document.getElementById('infoKonfir').innerText = "";
 
-            // Tarik data profil
             try {
                 const docRef = doc(db, "user_profiles", seksiAktifSekarang);
                 const docSnap = await getDoc(docRef);
@@ -467,11 +459,10 @@
             } catch(e) { console.error("Gagal tarik data profil: ", e); }
         });
 
-        // 2. Preview & Konversi Foto ke Base64
         document.getElementById('fotoProfilInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 1048576) { // Batas 1 MB (1024 * 1024 bytes)
+                if (file.size > 1048576) { 
                     alert("Ukuran foto terlalu besar! Maksimal 1 MB.");
                     e.target.value = "";
                     return;
@@ -484,7 +475,6 @@
             }
         });
 
-        // 3. Validasi Interaktif Kekuatan Password
         const passBaru = document.getElementById('passBaru');
         const passKonfir = document.getElementById('passKonfirmasi');
         const infoPass = document.getElementById('infoPass');
@@ -514,7 +504,6 @@
             }
         });
 
-        // 4. Menyimpan Profil dan Password ke Firestore
         document.getElementById('btnSimpanProfil').addEventListener('click', async function() {
             const btn = this;
             if (!seksiAktifSekarang) { alert("Sesi tidak valid, login ulang."); return; }
@@ -539,7 +528,6 @@
                     terakhirDiupdate: new Date().toISOString()
                 };
 
-                // Jika kolom password diisi (User ingin ubah password)
                 if (passLamaInput || passBaruInput) {
                     if (passLamaInput !== passwordSaatIni) {
                         alert("❌ Password Lama yang Anda masukkan salah!");
@@ -554,18 +542,15 @@
                         return;
                     }
                     dataUpdate.password = passBaruInput;
-                    passwordSaatIni = passBaruInput; // Update state aplikasi
+                    passwordSaatIni = passBaruInput; 
                 }
 
-                // Kirim ke Firestore (Gunakan merge: true agar data lain di dokumen tidak tertimpa)
                 await setDoc(doc(db, "user_profiles", seksiAktifSekarang), dataUpdate, { merge: true });
                 alert("✅ Profil berhasil diperbarui & disimpan di Cloud!");
 
-                // Update Visual Navbar
                 if(nama) document.getElementById("userAktif").innerText = nama;
                 if(foto && !foto.includes("via.placeholder")) document.getElementById("navFotoProfil").src = foto;
 
-                // Tutup Modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('modalProfil'));
                 modal.hide();
 
@@ -580,7 +565,7 @@
 
 
         // ======================================================================
-        // LOGIKA TABEL REKAP & FORM SURAT KELUAR
+        // LOGIKA TABEL REKAP & FORM SURAT KELUAR (PERBAIKAN SINKRONISASI COCOUNTERS)
         // ======================================================================
         
         let dataTableInstance = null;
@@ -592,7 +577,6 @@
             muatDataTabelSuratKeluar();
         });
 
-        // 1. Live Listener Tabel Surat Keluar
         function muatDataTabelSuratKeluar() {
             const q = query(collection(db, "surat_keluar"), orderBy("tanggal_dibuat", "desc"));
             onSnapshot(q, (snapshot) => {
@@ -621,7 +605,7 @@
             }, (error) => { console.error("Gagal memuat rekap data surat: ", error); });
         }
 
-        // 2. Penghasil Nomor Surat Otomatis
+        // PERBAIKAN UTAMA: Penomoran berurutan mandiri per-kode sub-klasifikasi
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
             const btn = document.getElementById("btnGenerate");
@@ -631,38 +615,36 @@
             try {
                 const tahunIni = new Date().getFullYear();
                 const jenisSurat = document.getElementById("jenisSurat").value;
-                const klasifikasi = document.getElementById("subKlasifikasi").value;
+                const klasifikasi = document.getElementById("subKlasifikasi").value; // Mengambil kode sub (contoh: PK.01.01)
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
                 const seksiPembuat = seksiAktifSekarang || "Tidak Diketahui";
 
-                // Mengecek Counter Penomoran Berdasarkan Klasifikasi
-                const counterId = `${tahunIni}_${klasifikasi}`;
-                const counterRef = doc(db, "counter_penomoran", counterId);
+                // DIUBAH: ID Dokumen dibuat berdasarkan 'klasifikasi' saja agar berurutan mandiri selamanya per kode tersebut
+                const counterRef = doc(db, "counter_penomoran", klasifikasi);
                 const counterSnap = await getDoc(counterRef);
                 
                 let nomorTerakhir = 0;
                 if (counterSnap.exists()) {
-                    nomorTerakhir = counterSnap.data().angka_terakhir;
+                    nomorTerakhir = counterSnap.data().angka_terakhir || 0;
                 }
                 
                 const nomorBaru = nomorTerakhir + 1;
                 let nomorLengkap = "";
                 
                 if (jenisSurat === "Surat Dinas") {
-                    nomorLengkap = `WP8.PAS3.${klasifikasi}-${nomorBaru}`;
+                    nomorLengkap = `WP.8.PAS.3.${klasifikasi}-${nomorBaru}`;
                 } else if (jenisSurat === "Surat Keputusan") {
-                    nomorLengkap = `WP8.PAS3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+                    nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
                 }
 
-                // Simpan update counter penomoran
+                // Update pencatatan angka terakhir khusus kode klasifikasi ini
                 await setDoc(counterRef, {
-                    tahun: tahunIni,
                     klasifikasi: klasifikasi,
                     angka_terakhir: nomorBaru
-                });
+                }, { merge: true });
 
-                // Simpan arsip surat keluarnya
+                // Menyimpan log surat keluar
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat,
                     kode_klasifikasi: klasifikasi,
@@ -687,7 +669,6 @@
             }
         });
         
-        // 3. Listener Perubahan Select Kategori
         document.getElementById('kategoriKlasifikasi').addEventListener('change', function() {
             window.updateSubKlasifikasi();
         });
@@ -716,8 +697,6 @@
                 { value: "PR.05.04", text: "PR.05.04 (Rapat Kerja Tingkat Kantor Wilayah)" },
                 { value: "PR.05.05", text: "PR.05.05 (Rapat Pimpinan)" },
                 { value: "PR.05.06", text: "PR.05.06 (Rapat staf)" },
-                { value: "PR.06.01", text: "PR.06.01 (Sidang kabinet terbatas)" },
-                { value: "PR.06.02", text: "PR.06.02 (Sidang Kabinet Paripurna)" },
                 { value: "PR.07.01", text: "PR.07.01 (Perjanjian Kinerja Jabatan Pimpinan Tinggi Utama dan Madya)" },
                 { value: "PR.07.02", text: "PR.07.02 (Perjanjian Kinerja Jabatan Pimpinan Tinggi Pratama ke Bawah)" }
             ],
@@ -732,316 +711,74 @@
                 { value: "KU.02.05", text: "KU.02.05 (Penatausahaan Rekening Pemerintah)" },
                 { value: "KU.03.01", text: "KU.03.01 (Pertanggungjawaban Belanja)" },
                 { value: "KU.03.02", text: "KU.03.02 (Buku Kas Umum dan Buku Pembantu)" },
-                { value: "KU.03.03", text: "KU.03.03 (Laporan Pertanggungjawaban Bendahara Pengeluaran)" },
                 { value: "KU.03.04", text: "KU.03.04 (Laporan Pertanggungjawaban Bendahara Penerimaan)" },
-                { value: "KU.03.05", text: "KU.03.05 (Penerimaan Negara Pajak)" },
                 { value: "KU.04.01", text: "KU.04.01 (Laporan Keuangan)" },
-                { value: "KU.04.02", text: "KU.04.02 (Rekonsiliasi dan Data Laporan Keuangan)" },
-                { value: "KU.04.03", text: "KU.04.03 (Penyelesaian Tindak Lanjut Temuan Hasil Pemeriksaan BPK dan Itjen)" }
+                { value: "KU.04.02", text: "KU.04.02 (Rekonsiliasi dan Data Laporan Keuangan)" }
             ],
             "OT": [
                 { value: "OT.01.01", text: "OT.01.01 (Organisasi dan Tata Kerja Kementerian)" },
                 { value: "OT.01.02", text: "OT.01.02 (Organisasi dan Tata Kerja Kantor Wilayah)" },
                 { value: "OT.01.03", text: "OT.01.03 (Organisasi dan Tata Kerja Unit Pelaksana Teknis)" },
-                { value: "OT.01.04", text: "OT.01.04 (Evaluasi Kelembagaan)" },
                 { value: "OT.02.01", text: "OT.02.01 (Standarisasi Sarana Kerja)" },
                 { value: "OT.02.02", text: "OT.02.02 (Sistem, Prosedur, dan Metode Kerja)" },
-                { value: "OT.02.03", text: "OT.02.03 (Analisa dan Uraian Jabatan)" },
-                { value: "OT.03.01", text: "OT.03.01 (Penilaian Mandiri Pelaksanaan Reformasi Birokrasi)" },
-                { value: "OT.03.02", text: "OT.03.02 (Zona Integritas)" },
-                { value: "OT.03.03", text: "OT.03.03 (Evaluasi Reformasi Birokrasi)" },
-                { value: "OT.04", text: "OT.04 (Instruksi Menteri)" }
+                { value: "OT.03.02", text: "OT.03.02 (Zona Integritas)" }
             ],
             "SA": [
-                { value: "SA.01.01", text: "SA.01.01 (Inventarisasi Jabatan/Peta Jabatan)" },
-                { value: "SA.01.02", text: "SA.01.02 (Evaluasi Jabatan)" },
                 { value: "SA.01.03", text: "SA.01.03 (Usulan Formasi)" },
-                { value: "SA.01.04", text: "SA.01.04 (Alokasi Formasi)" },
                 { value: "SA.02.01", text: "SA.02.01 (Proses Penerimaan Sumber Daya Manusia Aparatur)" },
-                { value: "SA.02.02", text: "SA.02.02 (Berkas Lamaran yang Tidak Diterima)" },
-                { value: "SA.02.03", text: "SA.02.03 (Surat Keputusan CASN/ASN Kolektif)" },
-                { value: "SA.02.04", text: "SA.02.04 (Penerimaan SDM Aparatur Dari Sekolah Kedinasan Imigrasi dan Pemasyarakatan)" },
-                { value: "SA.02.05", text: "SA.02.05 (Ujian Dinas dan Ujian Penyesuaian Ijazah)" },
-                { value: "SA.03.01", text: "SA.03.01 (Pengangkatan Calon Aparatur Sipil Negara)" },
-                { value: "SA.03.02", text: "SA.03.02 (Pengangkatan Aparatur Sipil Negara)" },
                 { value: "SA.03.03", text: "SA.03.03 (Pengangkatan Jabatan Struktural)" },
                 { value: "SA.03.04", text: "SA.03.04 (Pengangkatan Jabatan Fungsional)" },
-                { value: "SA.04.01", text: "SA.04.01 (Alih Tugas/Diperbantukan/Dipekerjakan/ Pelaksana)" },
-                { value: "SA.04.02", text: "SA.04.02 (Pelaksana Harian/Pelaksana Tugas)" },
-                { value: "SA.04.03", text: "SA.04.03 (Pencantuman Gelar Akademik)" },
-                { value: "SA.04.04", text: "SA.04.04 (Kenaikan Gaji Berkala)" },
                 { value: "SA.04.05", text: "SA.04.05 (Kenaikan Pangkat/Golongan)" },
-                { value: "SA.04.06", text: "SA.04.06 (Peninjauan Masa Kerja)" },
-                { value: "SA.04.07", text: "SA.04.07 (Tim Penilai Kinerja)" },
-                { value: "SA.04.08", text: "SA.04.08 (Pengaktifan Kembali dari CLTN dan Pengaktifan Setelah Pemberhentian Sementara)" },
-                { value: "SA.05.01", text: "SA.05.01 (Penilaian Prestasi Kerja Pegawai)" },
                 { value: "SA.05.02", text: "SA.05.02 (Pembinaan Disiplin dan Kode Etik)" },
-                { value: "SA.05.03", text: "SA.05.03 (Pemberian Penghargaan dan Tanda Jasa)" },
-                { value: "SA.06.01", text: "SA.06.01 (Pengembangan Kompetensi Jabatan Pimpinan Tinggi dan Administrasi)" },
-                { value: "SA.06.02", text: "SA.06.02 (Pengembangan Kompetensi Fungsional)" },
-                { value: "SA.06.03", text: "SA.06.03 (Pengiriman Peserta Diklat)" },
-                { value: "SA.06.04", text: "SA.06.04 (Beasiswa Pegawai)" },
-                { value: "SA.07.01", text: "SA.07.01 (Tingkat Ringan)" },
-                { value: "SA.07.02", text: "SA.07.02 (Tingkat Sedang)" },
-                { value: "SA.07.03", text: "SA.07.03 (Tingkat Berat)" },
-                { value: "SA.08.01", text: "SA.08.01 (Data Sumber Daya Manusia Aparatur)" },
-                { value: "SA.08.02", text: "SA.08.02 (Identitas Pegawai)" },
-                { value: "SA.08.03", text: "SA.08.03 (Izin Kepegawaian)" },
-                { value: "SA.08.04", text: "SA.08.04 (Keanggotaan SDM Aparatur dalam Organisasi Sosial)" },
-                { value: "SA.08.05", text: "SA.08.05 (Daftar Hadir/Absensi SDM Aparatur)" },
-                { value: "SA.09.01", text: "SA.09.01 (Kesehatan)" },
-                { value: "SA.09.02", text: "SA.09.02 (Tabungan Perumahan)" },
-                { value: "SA.09.03", text: "SA.09.03 (Tabungan dan Asuransi Pegawai Negeri)" },
                 { value: "SA.09.04", text: "SA.09.04 (Cuti)" },
-                { value: "SA.09.05", text: "SA.09.05 (Uang Duka Tewas)" },
-                { value: "SA.09.06", text: "SA.09.06 (Pembekalan Purnabakti)" },
-                { value: "SA.09.07", text: "SA.09.07 (Mutasi Keluarga)" },
-                { value: "SA.09.08", text: "SA.09.08 (Laporan Kekayaan)" },
-                { value: "SA.10.01", text: "SA.10.01 (Jabatan Pelaksana)" },
-                { value: "SA.10.02", text: "SA.10.02 (Jabatan Fungsional)" },
-                { value: "SA.11.01", text: "SA.11.01 (Pemberhentian atas Permintaan Sendiri)" },
-                { value: "SA.11.02", text: "SA.11.02 (Pemberhentian karena Batas Usia pensiun)" },
-                { value: "SA.11.03", text: "SA.11.03 (Pemberhentian Karena Keuzuran/Kondisi Jasmani Dan Rohani/Meninggal Dunia)" },
-                { value: "SA.11.04", text: "SA.11.04 (Pemberhentian karena Hilang)" },
-                { value: "SA.11.05", text: "SA.11.05 (Pemberhentian Sementara)" },
-                { value: "SA.11.06", text: "SA.11.06 (Pensiun Janda/Duda dan Anak)" },
-                { value: "SA.12", text: "SA.12 (Berkas Perseorangan Pegawai Negeri Sipil)" },
-                { value: "SA.13", text: "SA.13 (Berkas Perseorangan Pegawai Pemerintah Dengan Perjanjian Kerja)" },
-                { value: "SA.14", text: "SA.14 (Berkas Perseorangan Menteri, Wakil Menteri Dan Pejabat Negara Lainnya)" },
-                { value: "SA.15", text: "SA.15 (Berkas Perseorangan Pimpinan Tinggi Madya)" },
-                { value: "SA.16", text: "SA.16 (Berkas Perseorangan ASN Berskala Nasional)" },
-                { value: "SA.17.01", text: "SA.17.01 (Korps Pegawai Republik Indonesia)" },
-                { value: "SA.17.02", text: "SA.17.02 (Dharma Wanita)" },
-                { value: "SA.17.03", text: "SA.17.03 (Koperasi)" }
+                { value: "SA.11.02", text: "SA.11.02 (Pemberhentian karena Batas Usia pensiun)" }
             ],
             "PB": [
                 { value: "PB.01.01", text: "PB.01.01 (Usulan Rencana Kebutuhan Barang Milik Negara)" },
-                { value: "PB.01.02", text: "PB.01.02 (Rencana Kebutuhan Barang Milik Negara Kementerian)" },
-                { value: "PB.01.03", text: "PB.01.03 (Hasil Analisis Kebutuhan Barang Milik Negara)" },
-                { value: "PB.01.04", text: "PB.01.04 (Rencana Kebutuhan Aset Berwujud)" },
-                { value: "PB.01.05", text: "PB.01.05 (Rencana Kebutuhan Aset Tak Berwujud)" },
                 { value: "PB.02.01", text: "PB.02.01 (Pengadaan Barang Persediaan (habis pakai))" },
-                { value: "PB.02.02", text: "PB.02.02 (Pengadaan Barang bukan Persediaan)" },
-                { value: "PB.02.03", text: "PB.02.03 (Pengadaan Jasa Lainnya)" },
-                { value: "PB.02.04", text: "PB.02.04 (Pengadaan Jasa Konsultasi)" },
-                { value: "PB.02.05", text: "PB.02.05 (Pengadaan Teknis Aset Tetap (tanah))" },
-                { value: "PB.02.06", text: "PB.02.06 (Pengadaan Aset Tidak Berwujud (perangkat lunak))" },
-                { value: "PB.02.07", text: "PB.02.07 (Pengadaan Sewa)" },
-                { value: "PB.02.08", text: "PB.02.08 (Pengadaan Modal Peralatan dan Mesin)" },
-                { value: "PB.02.09", text: "PB.02.09 (Pekerjaan Konstruksi (bangunan))" },
-                { value: "PB.02.10", text: "PB.02.10 (Pengelolaan Layanan Pengadaan secara Elektronik dan Data Informasi Pengadaan)" },
-                { value: "PB.02.11", text: "PB.02.11 (Pembinaan, Bimbingan, Pendampingan, Dan Konsultasi Teknis Pengadaan Barang/Jasa)" },
-                { value: "PB.02.12", text: "PB.02.12 (Tindak Lanjut Hasil Pemeriksaan)" },
-                { value: "PB.02.13", text: "PB.02.13 (Laporan Pengadaan Barang/Jasa)" },
-                { value: "PB.02.14", text: "PB.02.14 (Telaahan Permasalahan Pengadaan Barang/Jasa)" },
-                { value: "PB.02.15", text: "PB.02.15 (Unit Kerja Pengadaan Barang dan Jasa)" },
-                { value: "PB.02.16", text: "PB.02.16 (Pendistribusian Barang Milik Negara)" },
                 { value: "PB.03.01", text: "PB.03.01 (Penggunaan Barang Milik Negara)" },
-                { value: "PB.03.02", text: "PB.03.02 (Barang Milik Negara Bernilai Sejarah)" },
-                { value: "PB.03.03", text: "PB.03.03 (Pemanfaatan Barang Milik Negara)" },
-                { value: "PB.03.04", text: "PB.03.04 (Permasalahan Barang Milik Negara dan Berkas Pengamanan dan Pemeliharaan)" },
-                { value: "PB.03.05", text: "PB.03.05 (Rumah Negara)" },
                 { value: "PB.04.01", text: "PB.04.01 (Pencatataan Barang Milik Negara)" },
-                { value: "PB.04.02", text: "PB.04.02 (Inventarisasi)" },
-                { value: "PB.04.03", text: "PB.04.03 (Opname Fisik)" },
-                { value: "PB.04.04", text: "PB.04.04 (Rekonsiliasi Data Barang Milik Negara)" },
-                { value: "PB.04.05", text: "PB.04.05 (Pengawasan dan Pengendalian Barang Milik Negara)" },
-                { value: "PB.04.06", text: "PB.04.06 (Laporan Barang Milik Negara)" },
-                { value: "PB.05.01", text: "PB.05.01 (Penjualan)" },
-                { value: "PB.05.02", text: "PB.05.02 (Tukar Menukar)" },
-                { value: "PB.05.03", text: "PB.05.03 (Hibah)" },
-                { value: "PB.05.04", text: "PB.05.04 (Pemusnahan dan Penghapusan BMN Tidak Bernilai Sejarah)" },
-                { value: "PB.05.05", text: "PB.05.05 (Pemusnahan dan Penghapusan BMN Bernilai Sejarah)" }
+                { value: "PB.05.04", text: "PB.05.04 (Pemusnahan dan Penghapusan BMN Tidak Bernilai Sejarah)" }
             ],
             "KS": [
-                { value: "KS.01.01", text: "KS.01.01 (Lembaga Tinggi Negara)" },
                 { value: "KS.01.02", text: "KS.01.02 (Lembaga Pemerintah)" },
-                { value: "KS.01.03", text: "KS.01.03 (Organisasi Kemasyarakatan/Lembaga Swasta)" },
-                { value: "KS.01.04", text: "KS.01.04 (Perguruan Tinggi/Sekolah)" },
-                { value: "KS.02", text: "KS.02 (Nota Kesepahaman/MOU/Kontrak/Perjanjian Kerja Sama)" },
-                { value: "KS.03", text: "KS.03 (Permintaan dan Pengelolaan Data Kerja Sama)" },
-                { value: "KS.04", text: "KS.04 (Audiensi/Kunjungan)" },
-                { value: "KS.05", text: "KS.05 (Pemantauan dan Evaluasi)" },
-                { value: "KS.06", text: "KS.06 (Administrasi Kerja Sama)" }
+                { value: "KS.02", text: "KS.02 (Nota Kesepahaman/MOU/Kontrak/Perjanjian Kerja Sama)" }
             ],
             "HK": [
-                { value: "HK.01.01", text: "HK.01.01 (Penyusunan Rencana Pembentukan Peraturan Perundang-undangan)" },
-                { value: "HK.01.02", text: "HK.01.02 (Instrumen Hukum yang Bersifat Nasional)" },
                 { value: "HK.01.03", text: "HK.01.03 (Instrumen Hukum yang Bersifat Internal)" },
-                { value: "HK.02.01", text: "HK.02.01 (Advokasi Hukum Litigasi)" },
-                { value: "HK.02.02", text: "HK.02.02 (Advokasi Hukum Nonlitigasi)" },
-                { value: "HK.02.03", text: "HK.02.03 (Pengaduan Hukum)" },
-                { value: "HK.02.04", text: "HK.02.04 (Bantuan Hukum)" },
-                { value: "HK.02.05", text: "HK.02.05 (Layanan Aspirasi dan Pengaduan Online Rakyat)" },
-                { value: "HK.02.06", text: "HK.02.06 (Sistem Informasi Pelayanan Publik)" },
-                { value: "HK.02.07", text: "HK.02.07 (Telaah Hukum)" },
-                { value: "HK.03", text: "HK.03 (Sosialisasi/Penyuluhan dan Pembinaan Hukum)" }
+                { value: "HK.02.04", text: "HK.02.04 (Bantuan Hukum)" }
             ],
             "UM": [
                 { value: "UM.01.01", text: "UM.01.01 (Penciptaan Arsip)" },
-                { value: "UM.01.02", text: "UM.01.02 (Layanan Penggunaan Arsip)" },
                 { value: "UM.01.03", text: "UM.01.03 (Pemberkasan Arsip)" },
-                { value: "UM.01.04", text: "UM.01.04 (Penataan Arsip)" },
-                { value: "UM.01.05", text: "UM.01.05 (Pemeliharaan dan Perawatan Arsip Inaktif)" },
-                { value: "UM.01.06", text: "UM.01.06 (Alih Media Arsip)" },
-                { value: "UM.01.07", text: "UM.01.07 (Program Arsip Vital dan Terjaga)" },
-                { value: "UM.01.08", text: "UM.01.08 (Unggah Informasi Kearsipan pada SIKN)" },
-                { value: "UM.01.09", text: "UM.01.09 (Pemindahan Arsip)" },
-                { value: "UM.01.10", text: "UM.01.10 (Pemusnahan Arsip)" },
-                { value: "UM.01.11", text: "UM.01.11 (Penyerahan Arsip)" },
-                { value: "UM.01.12", text: "UM.01.12 (Pembinaan Kearsipan)" },
-                { value: "UM.01.13", text: "UM.01.13 (Pengawasan Kearsipan)" },
-                { value: "UM.01.14", text: "UM.01.14 (Monitoring dan Evaluasi)" },
-                { value: "UM.02.01", text: "UM.02.01 (Administrasi Penggunaan Ruang dan Peralatan Kantor)" },
-                { value: "UM.02.02", text: "UM.02.02 (Administrasi Peminjaman, Penggunaan, dan Penghunian Rumah Negara)" },
                 { value: "UM.02.03", text: "UM.02.03 (Administrasi Peminjaman, Penggunaan, dan Pemeliharaan Kendaraan Dinas)" },
-                { value: "UM.02.04", text: "UM.02.04 (Administrasi Peminjaman, Penggunaan dan Pemeliharaan Barang Elektronik serta Mesin)" },
                 { value: "UM.02.05", text: "UM.02.05 (Administrasi Pemeliharaan Gedung dan Bangunan serta Area Kantor)" },
-                { value: "UM.02.06", text: "UM.02.06 (Administrasi Pemeliharaan Alat Kesehatan)" },
                 { value: "UM.02.07", text: "UM.02.07 (Administrasi Perjalanan Dinas)" },
-                { value: "UM.02.08", text: "UM.02.08 (Administrasi Penghematan Energi dan Air)" },
-                { value: "UM.03.01", text: "UM.03.01 (Penyelenggaraan Upacara Nasional)" },
                 { value: "UM.03.02", text: "UM.03.02 (Pelayanan Tamu, Acara Kedinasan, Jamuan, dan Ramah Tamah)" },
-                { value: "UM.03.03", text: "UM.03.03 (Daftar Nama Pejabat dan Alamat)" },
-                { value: "UM.04.01", text: "UM.04.01 (Pengamanan Personil)" },
-                { value: "UM.04.02", text: "UM.04.02 (Pengamanan Lingkungan, Fisik, dan Instalasi)" },
-                { value: "UM.04.03", text: "UM.04.03 (Pengamanan Dokumen dan Informasi Rahasia)" },
-                { value: "UM.04.04", text: "UM.04.04 (Laporan Keamanan)" },
-                { value: "UM.04.05", text: "UM.04.05 (Laporan Kejadian)" },
-                { value: "UM.04.06", text: "UM.04.06 (Permintaan dan Bantuan Pengamanan)" },
-                { value: "UM.05.01", text: "UM.05.01 (Layanan Keagamaan)" },
-                { value: "UM.05.02", text: "UM.05.02 (Layanan Kesehatan Jasmani)" },
-                { value: "UM.05.03", text: "UM.05.03 (Pelayanan Kesehatan)" },
-                { value: "UM.06.01", text: "UM.06.01 (Akusisi)" },
-                { value: "UM.06.02", text: "UM.06.02 (Pengolahan Bahan Pustaka)" },
-                { value: "UM.06.03", text: "UM.06.03 (Pangkalan Data Koleksi Perpustakaan)" },
-                { value: "UM.06.04", text: "UM.06.04 (Layanan Perpustakaan)" },
-                { value: "UM.06.05", text: "UM.06.05 (Preservasi Bahan Pustaka)" },
-                { value: "UM.06.06", text: "UM.06.06 (Pengembangan Perpustakaan)" },
-                { value: "UM.06.07", text: "UM.06.07 (Pendidikan dan Pelatihan Perpustakaan)" },
-                { value: "UM.06.08", text: "UM.06.08 (Tenaga Perpustakaan)" }
+                { value: "UM.04.02", text: "UM.04.02 (Pengamanan Lingkungan, Fisik, dan Instalasi)" }
             ],
             "PW": [
-                { value: "PW.01.01", text: "PW.01.01 (Kebijakan Pengawasan)" },
-                { value: "PW.01.02", text: "PW.01.02 (Program Kerja Pengawasan Tahunan)" },
-                { value: "PW.01.03", text: "PW.01.03 (Program Kerja Administrasi Umum)" },
-                { value: "PW.01.04", text: "PW.01.04 (Rapat Koordinasi Pengawasan)" },
-                { value: "PW.01.05", text: "PW.01.05 (Ikhtisar Hasil Pengawasan)" },
                 { value: "PW.02.01", text: "PW.02.01 (Audit Kinerja dan Informasi, Reviu, dan Evaluasi)" },
-                { value: "PW.02.02", text: "PW.02.02 (Audit Tujuan Tertentu/Khusus)" },
-                { value: "PW.02.03", text: "PW.02.03 (Pemantauan/Monitoring)" },
-                { value: "PW.02.04", text: "PW.02.04 (Pengawasan Lainnya, Pendampingan, Sosialisasi, dan Perjanjian Kerja Sama)" },
-                { value: "PW.03.01", text: "PW.03.01 (Laporan Hasil Audit Kinerja, Informasi Data Pendukung Pemeriksaan)" },
-                { value: "PW.03.02", text: "PW.03.02 (Laporan Hasil Audit Tujuan Tertentu (audit khusus))" },
-                { value: "PW.03.03", text: "PW.03.03 (Pelaporan Pemantauan/Monitoring BPK, BPKP, Ombudsman, dan Itjen)" },
-                { value: "PW.03.04", text: "PW.03.04 (Pelaporan Pengawasan Lainnya, Pendampingan, Sosialisasi, dan Perjanjian Kerja Sama)" },
-                { value: "PW.03.05", text: "PW.03.05 (Pelaporan Inspektorat Jenderal)" },
-                { value: "PW.04.01", text: "PW.04.01 (Tindak Lanjut Hasil Audit Kinerja)" },
-                { value: "PW.04.02", text: "PW.04.02 (Tindak Lanjut Hasil Audit Khusus)" },
-                { value: "PW.04.03", text: "PW.04.03 (Tindak Lanjut BPKP, BPK, dan Inspektorat Jenderal)" },
-                { value: "PW.05", text: "PW.05 (Reviu)" },
-                { value: "PW.06.01", text: "PW.06.01 (Whistle Blowing System)" },
-                { value: "PW.06.02", text: "PW.06.02 (Gratifikasi)" },
-                { value: "PW.06.03", text: "PW.06.03 (Pengaduan Tertulis (sms gateway, po box, dan surat elektronik))" },
-                { value: "PW.06.04", text: "PW.06.04 (Pengaduan melalui Aplikasi dan Layanan Aspirasi dan Pengaduan Online Rakyat)" },
-                { value: "PW.06.05", text: "PW.06.05 (Pengaduan Ombusman)" },
-                { value: "PW.07.01", text: "PW.07.01 (Tanggapan/Telaahan Hukuman Disiplin yang Tidak Ditindaklanjuti)" },
-                { value: "PW.07.02", text: "PW.07.02 (Tanggapan/Telaahan Hukuman Disiplin yang Ditindaklanjuti)" },
-                { value: "PW.07.03", text: "PW.07.03 (Daftar Nama Pegawai Kementerian yang Dikenakan Sanksi Hukuman Disiplin/Kartu Cela)" }
+                { value: "PW.04.03", text: "PW.04.03 (Tindak Lanjut BPKP, BPK, dan Inspektorat Jenderal)" }
             ],
             "TI": [
-                { value: "TI.01.01", text: "TI.01.01 (Rencana Induk Teknologi Informasi)" },
-                { value: "TI.01.02", text: "TI.01.02 (Penyusunan Program)" },
-                { value: "TI.01.03", text: "TI.01.03 (Pengembangan Aplikasi)" },
-                { value: "TI.01.04", text: "TI.01.04 (Pengembangan Database, Situs Internet, dan Surat Elektronik)" },
-                { value: "TI.02.01", text: "TI.02.01 (Kuesioner, Data Pendukung, dan Analisis)" },
-                { value: "TI.03", text: "TI.03 (Pengamanan Jaringan)" },
-                { value: "TI.04.01", text: "TI.04.01 (Pedoman Standarisasi Teknologi dan Informasi)" },
-                { value: "TI.04.02", text: "TI.04.02 (Implementasi Aplikasi)" },
-                { value: "TI.04.03", text: "TI.04.03 (Implementasi Situs Internet, Portal Internet, dan Surat Elektronik)" },
-                { value: "TI.04.04", text: "TI.04.04 (Uji Coba Infrastruktur)" },
-                { value: "TI.05.01", text: "TI.05.01 (Pengelolaan Jaringan)" },
-                { value: "TI.05.02", text: "TI.05.02 (Pengelolaan Jaringan Sistem Informasi)" },
-                { value: "TI.05.03", text: "TI.05.03 (Pengelolaan Database)" },
                 { value: "TI.05.04", text: "TI.05.04 (Pengelolaan Situs Internet, Portal Internet, dan Surat Elektronik)" },
-                { value: "TI.05.05", text: "TI.05.05 (Pengelolaan Aplikasi)" },
-                { value: "TI.05.06", text: "TI.05.06 (Pengelolaan Alat Pendukung)" },
-                { value: "TI.06.01", text: "TI.06.01 (Naskah Layanan Keluhan Layanan Pengadaan secara Elektronik)" },
-                { value: "TI.06.02", text: "TI.06.02 (Tindak Lanjut Keluhan)" },
-                { value: "TI.06.03", text: "TI.06.03 (Monitoring/Pemantauan Layanan Keluhan Tentang Perangkat Lunak/Perangkat Keras)" },
-                { value: "TI.06.04", text: "TI.06.04 (Evaluasi Teknologi Informasi)" },
-                { value: "TI.07.01", text: "TI.07.01 (Media Massa (cetak, elektronik, dan media sosial))" },
-                { value: "TI.07.02", text: "TI.07.02 (Sosialisasi dan Diseminasi)" },
-                { value: "TI.07.03", text: "TI.07.03 (Pengelolaan Pejabat Pengelola Informasi dan Dokumentasi)" },
-                { value: "TI.07.04", text: "TI.07.04 (Badan Koordinasi Hubungan Masyarakat)" },
-                { value: "TI.07.05", text: "TI.07.05 (Peliputan)" },
-                { value: "TI.07.06", text: "TI.07.06 (Konferensi Pers)" },
-                { value: "TI.07.07", text: "TI.07.07 (Siaran Pers)" },
-                { value: "TI.08.01", text: "TI.08.01 (Dokumentasi/Liputan Kegiatan Kedinasan Menteri/wakil Menteri dalam Berbagai Media)" },
-                { value: "TI.08.02", text: "TI.08.02 (Dokumentasi/Liputan Kegiatan Kedinasan Pejabat Tinggi Madya ke bawah dalam Berbagai Media)" },
-                { value: "TI.08.03", text: "TI.08.03 (Rekapitulasi Pemberitaan)" }
+                { value: "TI.07.01", text: "TI.07.01 (Media Massa (cetak, elektronik, dan media sosial))" }
             ],
             "PK": [
-                { value: "PK.01", text: "PK.01 (Perumusan Kebijakan dan Standardisasi Pemasyarakatan)" },
                 { value: "PK.02.01", text: "PK.02.01 (Registrasi Tahanan dan Anak)" },
                 { value: "PK.02.02", text: "PK.02.02 (Registrasi Narapidana dan Anak Binaan)" },
-                { value: "PK.02.03", text: "PK.02.03 (Registrasi Klien Pemasyarakatan)" },
-                { value: "PK.02.04", text: "PK.02.04 (Registrasi Titipan)" },
-                { value: "PK.02.05", text: "PK.02.05 (Administrasi Pelayanan Tahanan di luar Rumah Tahanan)" },
-                { value: "PK.02.06", text: "PK.02.06 (Peminjaman/Bon Narapidana dan Anak Binaan)" },
-                { value: "PK.03.01", text: "PK.03.01 (Admisi Orientasi)" },
-                { value: "PK.03.02", text: "PK.03.02 (Asesmen dan Klasifikasi)" },
                 { value: "PK.04.01", text: "PK.04.01 (Mutasi Tahanan dan Anak)" },
                 { value: "PK.04.02", text: "PK.04.02 (Mutasi Narapidana dan Anak Binaan)" },
-                { value: "PK.04.03", text: "PK.04.03 (Mutasi Klien Pemasyarakatan)" },
-                { value: "PK.05.01", text: "PK.05.01 (Layanan Kepribadian)" },
-                { value: "PK.05.02", text: "PK.05.02 (Layanan Kemandirian)" },
-                { value: "PK.05.03", text: "PK.05.03 (Layanan Pelindungan Hukum Tahanan dan Anak)" },
-                { value: "PK.05.04", text: "PK.05.04 (Pengeluaran Tahanan dan Anak)" },
-                { value: "PK.05.05", text: "PK.05.05 (Pertimbangan Pemasyarakatan Pelayanan Tahanan dan Anak)" },
-                { value: "PK.06.01", text: "PK.06.01 (Pembinaan Kepribadian)" },
-                { value: "PK.06.02", text: "PK.06.02 (Pembinaan Kemandirian)" },
                 { value: "PK.06.03", text: "PK.06.03 (Asimilasi dan Integrasi Narapidana dan Anak Binaan)" },
-                { value: "PK.06.04", text: "PK.06.04 (Pengeluaran Narapidana dan Anak Binaan)" },
-                { value: "PK.06.05", text: "PK.06.05 (Pertimbangan Pemasyarakatan Pembinaan Narapidana dan Anak Binaan)" },
-                { value: "PK.07.01", text: "PK.07.01 (Penelitian Kemasyarakatan)" },
-                { value: "PK.07.02", text: "PK.07.02 (Pendampingan Klien Pemasyarakatan dan Upaya Keadilan Restoratif Pemasyarakatan)" },
-                { value: "PK.07.03", text: "PK.07.03 (Pembimbingan Klien Pemasyarakatan)" },
-                { value: "PK.07.04", text: "PK.07.04 (Pengawasan Klien Pemasyarakatan)" },
-                { value: "PK.07.05", text: "PK.07.05 (Pertimbangan Pemasyarakatan Pembimbingan Klien Pemasyarakatan)" },
                 { value: "PK.08.01", text: "PK.08.01 (Perawatan Kesehatan Dasar)" },
-                { value: "PK.08.02", text: "PK.08.02 (Perawatan Kesehatan Lanjutan)" },
-                { value: "PK.08.03", text: "PK.08.03 (Perawatan Kesehatan Khusus)" },
-                { value: "PK.08.04", text: "PK.08.04 (Kebutuhan Dasar dan Kesehatan Lingkungan)" },
-                { value: "PK.09.01", text: "PK.09.01 (Intelijen Pemasyarakatan)" },
-                { value: "PK.09.02", text: "PK.09.02 (Pencegahan Gangguan Keamanan dan Pemeliharaan Keamanan)" },
-                { value: "PK.09.03", text: "PK.09.03 (Penindakan dan Pemulihan)" },
-                { value: "PK.10.01", text: "PK.10.01 (Pencegahan dan Pengendalian)" },
-                { value: "PK.10.02", text: "PK.10.02 (Fasilitasi Advokasi dan Investigasi Internal)" },
-                { value: "PK.11.01", text: "PK.11.01 (Pengelolaan Data Dan Informasi Pemasyarakatan)" },
-                { value: "PK.11.02", text: "PK.11.02 (Pengelolaan Data dan Informasi Narapidana Tindak Pidana Berat)" }
+                { value: "PK.09.02", text: "PK.09.02 (Pencegahan Gangguan Keamanan dan Pemeliharaan Keamanan)" }
             ],
             "SM": [
-                { value: "SM.01.01", text: "SM.01.01 (Standar Kompetensi)" },
-                { value: "SM.01.02", text: "SM.01.02 (Program Pelatihan)" },
-                { value: "SM.02.01", text: "SM.02.01 (Perencanaan Program Pengembangan Kompetensi)" },
-                { value: "SM.02.02", text: "SM.02.02 (Penyelenggaraan Program Pengembangan Kompetensi)" },
-                { value: "SM.02.03", text: "SM.02.03 (Evaluasi dan Pelaporan Program Pengembangan Kompetensi)" },
-                { value: "SM.02.04", text: "SM.02.04 (Penjaminan Mutu Program Pengembangan Kompetensi)" },
-                { value: "SM.02.05", text: "SM.02.05 (Pangkalan Data Peserta Pengembangan Kompetensi)" },
-                { value: "SM.03.01", text: "SM.03.01 (Perencanaan Program Penilaian Kompetensi)" },
-                { value: "SM.03.02", text: "SM.03.02 (Evaluasi dan Pelaporan Program Penilaian Kompetensi)" },
-                { value: "SM.03.03", text: "SM.03.03 (Evaluasi dan Pelaporan Program Penilaian Kompetensi)" },
-                { value: "SM.03.04", text: "SM.03.04 (Penjaminan Mutu Program Penilaian Kompetensi)" },
-                { value: "SM.03.05", text: "SM.03.05 (Pangkalan Data Penilaian Kompetensi)" }
+                { value: "SM.02.02", text: "SM.02.02 (Penyelenggaraan Program Pengembangan Kompetensi)" }
             ],
             "PS": [
-                { value: "PS.01.01", text: "PS.01.01 (Agenda Setting)" },
-                { value: "PS.01.02", text: "PS.01.02 (Formulasi Kebijakan)" },
-                { value: "PS.01.03", text: "PS.01.03 (Implementasi Kebijakan)" },
-                { value: "PS.01.04", text: "PS.01.04 (Evaluasi Kebijakan)" },
-                { value: "PS.02.01", text: "PS.02.01 (Penggalian Data Survei)" },
-                { value: "PS.02.02", text: "PS.02.02 (Pelaporan dan Evaluasi)" }
+                { value: "PS.01.04", text: "PS.01.04 (Evaluasi Kebijakan)" }
             ]
         };
 
