@@ -958,36 +958,43 @@
         }
     </script>
 <script>
-    // 1. Fungsi untuk tombol "Salin"
+    // 1. Fungsi untuk tombol "Salin" (Super Aman)
     window.salinNomorManual = function() {
-        const teks = document.getElementById("teksNomorSurat").innerText;
+        const teks = document.getElementById("teksNomorSurat").innerText.trim();
         
-        // Menggunakan API Clipboard untuk menyalin teks murni tanpa format
-        navigator.clipboard.writeText(teks).then(() => {
-            const btn = document.getElementById("btnSalinTeks");
-            const originalHTML = btn.innerHTML;
-            
-            // Ubah tampilan tombol sesaat menjadi sukses
-            btn.innerHTML = "✅ Tersalin!";
-            btn.classList.replace("btn-outline-secondary", "btn-success");
-            btn.style.color = "white";
-            
-            // Kembalikan tombol seperti semula setelah 2 detik
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.replace("btn-success", "btn-outline-secondary");
-                btn.style.color = "";
-            }, 2000);
-        }).catch(err => {
-            alert("Browser tidak mendukung fitur salin otomatis: " + err);
-        });
+        // Trik Textarea Tersembunyi: Dijamin 100% Plain Text tanpa warna CSS
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = teks;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand("copy"); // Salin paksa
+        document.body.removeChild(tempTextArea); // Hapus setelah disalin
+        
+        // Ubah tampilan tombol sesaat
+        const btn = document.getElementById("btnSalinTeks");
+        const originalHTML = btn.innerHTML;
+        
+        btn.innerHTML = "✅ Tersalin!";
+        btn.classList.replace("btn-outline-secondary", "btn-success");
+        btn.style.color = "white";
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.replace("btn-success", "btn-outline-secondary");
+            btn.style.color = "";
+        }, 2000);
     };
 
-    // 2. Fungsi untuk mencegat (intercept) blok/copy manual (Ctrl+C)
-    document.getElementById('teksNomorSurat').addEventListener('copy', function(e) {
-        e.preventDefault(); // Hentikan browser membawa warna/format CSS
-        const textOnly = window.getSelection().toString();
-        e.clipboardData.setData('text/plain', textOnly); // Paksa masukkan format teks biasa saja
+    // 2. Mencegat (Intercept) Blok manual (Ctrl+C / Klik Kanan -> Copy)
+    document.addEventListener('copy', function(e) {
+        const kotakHasil = document.getElementById('hasilGenerate');
+        const seleksi = window.getSelection();
+        
+        // Jika yang diblok/dicopy berada di area kotak surat keluar
+        if (kotakHasil && kotakHasil.contains(seleksi.anchorNode)) {
+            e.preventDefault(); // Blokir browser dari menyalin warna dan format html
+            e.clipboardData.setData('text/plain', seleksi.toString()); // Masukkan hanya teks mentah
+        }
     });
 </script>
 </body>
