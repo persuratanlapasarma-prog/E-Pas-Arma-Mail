@@ -957,5 +957,38 @@
             }
         }
     </script>
+<script>
+    // 1. Fungsi untuk tombol "Salin"
+    window.salinNomorManual = function() {
+        const teks = document.getElementById("teksNomorSurat").innerText;
+        
+        // Menggunakan API Clipboard untuk menyalin teks murni tanpa format
+        navigator.clipboard.writeText(teks).then(() => {
+            const btn = document.getElementById("btnSalinTeks");
+            const originalHTML = btn.innerHTML;
+            
+            // Ubah tampilan tombol sesaat menjadi sukses
+            btn.innerHTML = "✅ Tersalin!";
+            btn.classList.replace("btn-outline-secondary", "btn-success");
+            btn.style.color = "white";
+            
+            // Kembalikan tombol seperti semula setelah 2 detik
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace("btn-success", "btn-outline-secondary");
+                btn.style.color = "";
+            }, 2000);
+        }).catch(err => {
+            alert("Browser tidak mendukung fitur salin otomatis: " + err);
+        });
+    };
+
+    // 2. Fungsi untuk mencegat (intercept) blok/copy manual (Ctrl+C)
+    document.getElementById('teksNomorSurat').addEventListener('copy', function(e) {
+        e.preventDefault(); // Hentikan browser membawa warna/format CSS
+        const textOnly = window.getSelection().toString();
+        e.clipboardData.setData('text/plain', textOnly); // Paksa masukkan format teks biasa saja
+    });
+</script>
 </body>
 </html>
