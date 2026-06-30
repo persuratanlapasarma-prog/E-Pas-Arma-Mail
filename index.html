@@ -565,7 +565,7 @@
 
 
         // ======================================================================
-        // LOGIKA TABEL REKAP & FORM SURAT KELUAR (PERBAIKAN SINKRONISASI COCOUNTERS)
+        // LOGIKA TABEL REKAP & FORM SURAT KELUAR (BERDASARKAN KATEGORI)
         // ======================================================================
         
         let dataTableInstance = null;
@@ -605,7 +605,7 @@
             }, (error) => { console.error("Gagal memuat rekap data surat: ", error); });
         }
 
-        // PERBAIKAN UTAMA: Penomoran berurutan mandiri per-kode sub-klasifikasi
+        // PERBAIKAN: Penomoran berurutan mandiri per-kategori utama (Contoh: PK, UM, KU)
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
             const btn = document.getElementById("btnGenerate");
@@ -615,13 +615,14 @@
             try {
                 const tahunIni = new Date().getFullYear();
                 const jenisSurat = document.getElementById("jenisSurat").value;
-                const klasifikasi = document.getElementById("subKlasifikasi").value; // Mengambil kode sub (contoh: PK.01.01)
+                const kategoriUtama = document.getElementById("kategoriKlasifikasi").value; // Mengambil kategori utama (contoh: PK)
+                const klasifikasi = document.getElementById("subKlasifikasi").value; // Mengambil sub kode lengkap (contoh: PK.02.01)
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
                 const seksiPembuat = seksiAktifSekarang || "Tidak Diketahui";
 
-                // DIUBAH: ID Dokumen dibuat berdasarkan 'klasifikasi' saja agar berurutan mandiri selamanya per kode tersebut
-                const counterRef = doc(db, "counter_penomoran", klasifikasi);
+                // PERBAIKAN: ID Dokumen diatur berdasarkan 'kategoriUtama' agar urutan berlanjut untuk seluruh rumpun kode yang sama
+                const counterRef = doc(db, "counter_penomoran", kategoriUtama);
                 const counterSnap = await getDoc(counterRef);
                 
                 let nomorTerakhir = 0;
@@ -638,16 +639,17 @@
                     nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
                 }
 
-                // Update pencatatan angka terakhir khusus kode klasifikasi ini
+                // Simpan/update angka terakhir khusus untuk Kategori Utama ini
                 await setDoc(counterRef, {
-                    klasifikasi: klasifikasi,
+                    kategori: kategoriUtama,
                     angka_terakhir: nomorBaru
                 }, { merge: true });
 
-                // Menyimpan log surat keluar
+                // Menyimpan log log data surat keluar
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat,
-                    kode_klasifikasi: klasifikasi,
+                    kode_klasifikasi: klasifikasi, 
+                    kategori_utama: kategoriUtama,
                     nomor_urut: nomorBaru,
                     nomor_surat_lengkap: nomorLengkap,
                     perihal: perihal,
@@ -675,7 +677,7 @@
     </script>
 
 
-   <script>
+    <script>
         const dataKlasifikasi = {
             "PR": [
                 { value: "PR.01.01", text: "PR.01.01 (Rencana pembangunan jangka panjang)" },
@@ -1025,6 +1027,7 @@
                 { value: "PS.02.02", text: "PS.02.02 (Pelaporan dan Evaluasi)" }
             ]
         };
+
         window.updateSubKlasifikasi = function() {
             const kategori = document.getElementById("kategoriKlasifikasi").value;
             const subSelect = document.getElementById("subKlasifikasi");
