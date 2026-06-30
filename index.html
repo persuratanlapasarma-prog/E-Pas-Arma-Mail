@@ -650,9 +650,9 @@
                 let nomorLengkap = "";
                 
                 if (jenisSurat === "Surat Dinas") {
-                    nomorLengkap = `W8.PAS3.${klasifikasi}.${nomorBaru}`;
+                    nomorLengkap = `WP8.PAS3.${klasifikasi}-${nomorBaru}`;
                 } else if (jenisSurat === "Surat Keputusan") {
-                    nomorLengkap = `W8.PAS3.${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+                    nomorLengkap = `WP8.PAS3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
                 }
 
                 // Simpan update counter penomoran
