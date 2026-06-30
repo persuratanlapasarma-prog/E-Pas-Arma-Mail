@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <style>
-        /* Penerapan Skema Warna & Gambar Background */
+        /* Skema Warna & Latar Belakang */
         body { 
             background: linear-gradient(rgba(7, 33, 61, 0.75), rgba(7, 33, 61, 0.75)), url('bg-lapas.png') no-repeat center center fixed;
             background-size: cover;
@@ -23,120 +23,40 @@
             min-height: 100vh;
         }
         
-        .navbar-custom { 
-            background-color: rgba(7, 33, 61, 0.95); 
-            border-bottom: 4px solid #EEBF63;
-            backdrop-filter: blur(5px);
-        }
-        .navbar-custom .navbar-brand {
-            color: #E0E2E3 !important;
-        }
-        .navbar-brand span {
-            color: #EEBF63;
-        }
+        .navbar-custom { background-color: rgba(7, 33, 61, 0.95); border-bottom: 4px solid #EEBF63; backdrop-filter: blur(5px); }
+        .navbar-custom .navbar-brand { color: #E0E2E3 !important; }
+        .navbar-brand span { color: #EEBF63; }
+        .card { border-radius: 16px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); border: none; background-color: rgba(255, 255, 255, 0.98); }
+        
+        /* Navigasi Tab */
+        .nav-tabs { border-bottom: 2px solid rgba(7, 33, 61, 0.1); }
+        .nav-tabs .nav-link { color: #07213D; border: none; font-weight: 600; padding: 10px 20px; border-radius: 8px 8px 0 0; transition: all 0.3s ease; margin: 0 4px; }
+        .nav-tabs .nav-link:hover { background-color: rgba(7, 33, 61, 0.05); color: #07213D; }
+        .nav-tabs .nav-link.active { color: #ffffff !important; background-color: #07213D !important; border: none; box-shadow: 0 -4px 10px rgba(7, 33, 61, 0.15); }
+        
+        /* Input & Form */
+        .form-label { color: #07213D; }
+        .form-control, .form-select { border: 1.5px solid rgba(7, 33, 61, 0.2); border-radius: 8px; padding: 10px 14px; background-color: #F8F9FA; }
+        .form-control:focus, .form-select:focus { border-color: #07213D; box-shadow: 0 0 0 0.25rem rgba(7, 33, 61, 0.15); background-color: #ffffff; }
+        
+        /* Tombol */
+        .btn-custom-primary { background-color: #07213D; color: #ffffff; border: 2px solid #07213D; border-radius: 8px; transition: all 0.3s ease; }
+        .btn-custom-primary:hover:not(:disabled) { background-color: #0c345c; border-color: #0c345c; color: #EEBF63; box-shadow: 0 4px 12px rgba(7, 33, 61, 0.4); }
+        .btn-custom-primary:disabled { background-color: #6c757d; border-color: #6c757d; opacity: 0.65; }
+        .btn-custom-secondary { background-color: #EEBF63; color: #07213D; border: 2px solid #EEBF63; border-radius: 8px; font-weight: bold; transition: all 0.3s ease; }
+        .btn-custom-secondary:hover { background-color: #dfb053; border-color: #dfb053; color: #07213D; box-shadow: 0 4px 12px rgba(238, 191, 99, 0.4); }
+        
+        .alert-custom-success { background-color: rgba(7, 33, 61, 0.05); border: 2px dashed #07213D; color: #07213D; border-radius: 12px; }
+        .text-gold-highlight { color: #EEBF63; background-color: #07213D; padding: 4px 12px; border-radius: 6px; display: inline-block; }
+        
+        /* Tabel */
+        .table-responsive { margin-top: 15px; }
+        table.dataTable thead th { background-color: #07213D !important; color: #ffffff !important; border-bottom: 3px solid #EEBF63 !important; padding: 12px !important; }
+        table.dataTable tbody td { padding: 12px !important; vertical-align: middle; }
 
-        .card { 
-            border-radius: 16px; 
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); 
-            border: none;
-            background-color: rgba(255, 255, 255, 0.98);
-        }
-
-        .nav-tabs {
-            border-bottom: 2px solid rgba(7, 33, 61, 0.1);
-        }
-        .nav-tabs .nav-link { 
-            color: #07213D; 
-            border: none;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 8px 8px 0 0;
-            transition: all 0.3s ease;
-            margin: 0 4px;
-        }
-        .nav-tabs .nav-link:hover {
-            background-color: rgba(7, 33, 61, 0.05);
-            color: #07213D;
-        }
-        .nav-tabs .nav-link.active { 
-            color: #ffffff !important; 
-            background-color: #07213D !important;
-            border: none;
-            box-shadow: 0 -4px 10px rgba(7, 33, 61, 0.15);
-        }
-
-        .form-label {
-            color: #07213D;
-        }
-        .form-control, .form-select {
-            border: 1.5px solid rgba(7, 33, 61, 0.2);
-            border-radius: 8px;
-            padding: 10px 14px;
-            background-color: #F8F9FA;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #07213D;
-            box-shadow: 0 0 0 0.25rem rgba(7, 33, 61, 0.15);
-            background-color: #ffffff;
-        }
-
-        .btn-custom-primary {
-            background-color: #07213D;
-            color: #ffffff;
-            border: 2px solid #07213D;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        .btn-custom-primary:hover {
-            background-color: #0c345c;
-            border-color: #0c345c;
-            color: #EEBF63; 
-            box-shadow: 0 4px 12px rgba(7, 33, 61, 0.4);
-        }
-
-        .btn-custom-secondary {
-            background-color: #EEBF63;
-            color: #07213D;
-            border: 2px solid #EEBF63;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .btn-custom-secondary:hover {
-            background-color: #dfb053;
-            border-color: #dfb053;
-            color: #07213D;
-            box-shadow: 0 4px 12px rgba(238, 191, 99, 0.4);
-        }
-
-        .alert-custom-success {
-            background-color: rgba(7, 33, 61, 0.05);
-            border: 2px dashed #07213D;
-            color: #07213D;
-            border-radius: 12px;
-        }
-        .text-gold-highlight {
-            color: #EEBF63;
-            background-color: #07213D;
-            padding: 4px 12px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        /* Desain Tabel Premium */
-        .table-responsive {
-            margin-top: 15px;
-        }
-        table.dataTable thead th {
-            background-color: #07213D !important;
-            color: #ffffff !important;
-            border-bottom: 3px solid #EEBF63 !important;
-            padding: 12px !important;
-        }
-        table.dataTable tbody td {
-            padding: 12px !important;
-            vertical-align: middle;
-        }
+        /* Foto Profil Navigasi */
+        .nav-profile-img { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 2px solid #EEBF63; background-color: #fff;}
+        .foto-preview-modal { width: 110px; height: 110px; object-fit: cover; border-radius: 50%; border: 3px solid #07213D; background-color: #f4f6f9; }
     </style>
 </head>
 <body>
@@ -167,7 +87,7 @@
                     <label class="form-label fw-bold">Password</label>
                     <input type="password" id="loginPassword" class="form-control" placeholder="Masukkan password" required>
                 </div>
-                <button type="submit" class="btn btn-custom-primary w-100 fw-bold py-2">🔒 Masuk</button>
+                <button type="submit" id="btnLoginBtn" class="btn btn-custom-primary w-100 fw-bold py-2">🔒 Masuk</button>
             </form>
             
             <div id="loginError" class="alert alert-danger mt-3 d-none small text-center mb-0">
@@ -177,6 +97,7 @@
     </div>
 
     <div id="main-app" class="d-none">
+        
         <nav class="navbar navbar-dark navbar-custom mb-5 shadow-sm">
             <div class="container py-1 d-flex align-items-center">
                 <a class="navbar-brand d-flex align-items-center" href="#">
@@ -188,8 +109,12 @@
                 </a>
                 
                 <div class="d-flex align-items-center ms-auto">
-                    <button class="btn btn-link text-light text-decoration-none me-3" onclick="bukaModalProfil()">
-                        Halo, <b id="userAktif" style="color: #EEBF63;">Admin</b>
+                    <button id="btnBukaProfil" class="btn btn-link text-light text-decoration-none me-4 p-0 d-flex align-items-center gap-2">
+                        <img src="https://via.placeholder.com/150" id="navFotoProfil" class="nav-profile-img" alt="Profil">
+                        <span class="d-none d-md-inline text-start lh-sm">
+                            <small class="d-block text-white-50" style="font-size: 0.75rem;">Seksi / Bagian</small>
+                            <b id="userAktif" style="color: #EEBF63;">Admin</b>
+                        </span>
                     </button>
                     <button id="btnLogout" class="btn btn-sm btn-outline-light fw-bold" style="border-radius: 6px;">🚪 Keluar</button>
                 </div>
@@ -203,19 +128,19 @@
                         
                         <ul class="nav nav-tabs mb-4 justify-content-center" id="persuratanTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab" aria-controls="keluar-pane" aria-selected="true">📤 Surat Keluar</button>
+                                <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab">📤 Surat Keluar</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="rekap-tab" data-bs-toggle="tab" data-bs-target="#rekap-pane" type="button" role="tab" aria-controls="rekap-pane" aria-selected="false">📊 Rekap Surat Keluar</button>
+                                <button class="nav-link" id="rekap-tab" data-bs-toggle="tab" data-bs-target="#rekap-pane" type="button" role="tab">📊 Rekap Surat Keluar</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk-pane" type="button" role="tab" aria-controls="masuk-pane" aria-selected="false">📥 Surat Masuk</button>
+                                <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk-pane" type="button" role="tab">📥 Surat Masuk</button>
                             </li>
                         </ul>
 
                         <div class="tab-content" id="persuratanTabContent">
                             
-                            <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" aria-labelledby="keluar-tab" tabindex="0">
+                            <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" tabindex="0">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 col-lg-8">
                                         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -224,6 +149,7 @@
                                                 Petunjuk Klasifikasi (PDF)
                                             </a>
                                         </div>
+                                        
                                         <form id="formSuratKeluar">
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Jenis Surat</label>
@@ -236,7 +162,7 @@
 
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold">Kategori Klasifikasi</label>
-                                                <select id="kategoriKlasifikasi" class="form-select" required onchange="updateSubKlasifikasi()">
+                                                <select id="kategoriKlasifikasi" class="form-select" required>
                                                     <option value="" disabled selected>-- Pilih Kategori --</option>
                                                     <option value="PR">PR (Perencanaan)</option>
                                                     <option value="UM">UM (Umum)</option>
@@ -284,7 +210,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="rekap-pane" role="tabpanel" aria-labelledby="rekap-tab" tabindex="0">
+                            <div class="tab-pane fade" id="rekap-pane" role="tabpanel" tabindex="0">
                                 <h4 class="mb-4 fw-bold text-center" style="color: #07213D;">📊 Data Rekapan Nomor Surat Keluar</h4>
                                 <div class="table-responsive">
                                     <table id="tabelSuratKeluar" class="table table-striped table-bordered w-100">
@@ -297,15 +223,15 @@
                                                 <th>Kode Klasifikasi</th>
                                                 <th>Perihal</th>
                                                 <th>Tujuan Surat</th>
-                                                <th>Pembuat</th> </tr>
+                                                <th>Pembuat</th>
+                                            </tr>
                                         </thead>
-                                        <tbody id="bodyTabelSurat">
-                                        </tbody>
+                                        <tbody id="bodyTabelSurat"></tbody>
                                     </table>
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="masuk-pane" role="tabpanel" aria-labelledby="masuk-tab" tabindex="0">
+                            <div class="tab-pane fade" id="masuk-pane" role="tabpanel" tabindex="0">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 col-lg-8 text-center py-4 px-2">
                                         <h4 class="mb-3 fw-bold" style="color: #07213D;">Digitalisasi Surat Masuk</h4>
@@ -324,21 +250,13 @@
                                             <a href="https://docs.google.com/forms/d/e/1FAIpQLSezWirYleq0lo5733nwyPqi_YJAv-D0cxzHedIQSmb904sQzw/viewform" target="_blank" class="btn btn-custom-primary px-4 py-3 fw-bold">
                                                 📤 Buka & Isi Form Surat Masuk
                                             </a>
-                                            
                                             <a href="https://drive.google.com/drive/folders/10Qm1qdcCxgU-HAZFZ4VdgbIibhVs1cKj" target="_blank" class="btn btn-custom-secondary px-4 py-3 fw-bold">
                                                 📁 Lihat File Surat Masuk (Drive)
                                             </a>
                                         </div>
-                                        
-                                        <div class="alert text-start border-0 shadow-none mb-0 mt-2" style="background-color: rgba(7, 33, 61, 0.05); color: #07213D; border-radius: 12px; border-left: 4px solid #EEBF63 !important;">
-                                            <span class="fw-bold d-block mb-1">📋 Petunjuk Operasional Lapas:</span>
-                                            <small class="d-block mb-1">1. Untuk mengunggah berkas baru, klik **Isi Form Surat Masuk**.</small>
-                                            <small class="d-block">2. Untuk memeriksa arsip berkas PDF yang telah di-upload rekan kerja, klik **Lihat File Surat Masuk**.</small>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div> 
                     </div>
                 </div>
@@ -347,134 +265,70 @@
     </div> 
 
     <div class="modal fade" id="modalProfil" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">Profil & Keamanan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header" style="background-color: #07213D; color: white;">
+                    <h5 class="modal-title fw-bold">Pengaturan Profil & Keamanan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form id="formProfil">
-                        <div class="row">
-                            <div class="col-md-4 text-center">
-                                <img src="https://via.placeholder.com/150" id="fotoPreview" class="rounded-circle mb-2" width="100">
-                                <input type="file" id="fotoProfil" class="form-control form-control-sm">
+                        
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                <img src="https://via.placeholder.com/150" id="fotoPreview" class="foto-preview-modal mb-3 shadow-sm">
+                                <input type="file" id="fotoProfilInput" class="form-control form-control-sm mx-auto" accept="image/*" style="max-width: 200px;">
+                                <small class="text-muted d-block mt-1">Maks. 1 MB (JPG/PNG)</small>
                             </div>
+                            
                             <div class="col-md-8">
-                                <div class="mb-2">
-                                    <label class="small fw-bold">Nama Lengkap</label>
-                                    <input type="text" id="namaUser" class="form-control">
+                                <div class="mb-3">
+                                    <label class="small fw-bold form-label">Nama Lengkap</label>
+                                    <input type="text" id="namaUser" class="form-control" placeholder="Nama Pegawai">
                                 </div>
-                                <div class="mb-2">
-                                    <label class="small fw-bold">NIP</label>
-                                    <input type="text" id="nipUser" class="form-control">
+                                <div class="mb-3">
+                                    <label class="small fw-bold form-label">NIP</label>
+                                    <input type="number" id="nipUser" class="form-control" placeholder="Angka NIP">
+                                </div>
+                                <div>
+                                    <label class="small fw-bold form-label">Jabatan</label>
+                                    <input type="text" id="jabatanUser" class="form-control" placeholder="Jabatan/Pangkat">
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                        <h6 class="fw-bold">Ubah Password</h6>
-                        <div class="mb-2">
-                            <input type="password" id="passLama" class="form-control" placeholder="Password Lama">
+                        
+                        <div class="p-3 rounded mb-4" style="background-color: rgba(7, 33, 61, 0.05); border: 1px solid rgba(7, 33, 61, 0.1);">
+                            <h6 class="fw-bold mb-3" style="color: #07213D;">🔒 Ubah Password <span class="fw-normal small text-muted">(Kosongkan jika tidak ingin mengubah)</span></h6>
+                            <div class="mb-3">
+                                <input type="password" id="passLama" class="form-control" placeholder="Password Lama">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <input type="password" id="passBaru" class="form-control" placeholder="Password Baru">
+                                    <div id="infoPass" class="mt-1" style="min-height: 20px;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="password" id="passKonfirmasi" class="form-control" placeholder="Konfirmasi Password Baru">
+                                    <div id="infoKonfir" class="mt-1" style="min-height: 20px;"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-2">
-                            <input type="password" id="passBaru" class="form-control" placeholder="Password Baru">
-                            <small id="infoPass" class="text-muted"></small>
-                        </div>
-                        <div class="mb-2">
-                            <input type="password" id="passKonfirmasi" class="form-control" placeholder="Konfirmasi Password Baru">
-                            <small id="infoKonfir" class="text-danger"></small>
-                        </div>
-                        <button type="button" class="btn btn-custom-primary w-100 mt-2">Simpan Perubahan</button>
+
+                        <button type="button" id="btnSimpanProfil" class="btn btn-custom-primary w-100 fw-bold py-2">
+                            💾 Simpan Perubahan Profil
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Logika Modal Profil & Validasi Password
-        function bukaModalProfil() {
-            const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
-            modal.show();
-        }
-
-        const passBaru = document.getElementById('passBaru');
-        const passKonfir = document.getElementById('passKonfirmasi');
-        const infoPass = document.getElementById('infoPass');
-        const infoKonfir = document.getElementById('infoKonfir');
-
-        passBaru.addEventListener('input', () => {
-            const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-            if (passBaru.value === "") {
-                infoPass.innerText = "";
-            } else if (regex.test(passBaru.value)) {
-                infoPass.innerText = "✓ Password Kuat";
-                infoPass.className = "text-success small fw-bold";
-            } else {
-                infoPass.innerText = "X Minimal 8 karakter, 1 huruf besar & 1 kecil";
-                infoPass.className = "text-danger small fw-bold";
-            }
-        });
-
-        passKonfir.addEventListener('input', () => {
-            if (passKonfir.value === "") {
-                infoKonfir.innerText = "";
-            } else if (passKonfir.value === passBaru.value) {
-                infoKonfir.innerText = "✓ Password sesuai";
-                infoKonfir.className = "text-success small fw-bold";
-            } else {
-                infoKonfir.innerText = "X Password tidak sama";
-                infoKonfir.className = "text-danger small fw-bold";
-            }
-        });
-
-        // Logika Login & Sesi
-        const passwordSeksi = {
-            "Tata Usaha": "tu123",
-            "KPLP": "kplp123",
-            "Kamtib": "kamtib123",
-            "Binadik": "binadik123"
-        };
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const sesiAktif = localStorage.getItem("loggedInSeksi");
-            if(sesiAktif) {
-                tampilkanAplikasiUtama(sesiAktif);
-            } else {
-                document.getElementById("login-container").classList.remove("d-none");
-            }
-        });
-
-        document.getElementById("formLogin").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const seksi = document.getElementById("loginSeksi").value;
-            const password = document.getElementById("loginPassword").value;
-
-            if (passwordSeksi[seksi] && passwordSeksi[seksi] === password) {
-                localStorage.setItem("loggedInSeksi", seksi);
-                document.getElementById("loginError").classList.add("d-none");
-                tampilkanAplikasiUtama(seksi);
-            } else {
-                document.getElementById("loginError").classList.remove("d-none");
-            }
-        });
-
-        document.getElementById("btnLogout").addEventListener("click", function() {
-            localStorage.removeItem("loggedInSeksi");
-            window.location.reload(); 
-        });
-
-        function tampilkanAplikasiUtama(namaSeksi) {
-            document.getElementById("login-container").classList.add("d-none");
-            document.getElementById("main-app").classList.remove("d-none");
-            document.getElementById("userAktif").innerText = namaSeksi;
-        }
-    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // Konfigurasi Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDa_o2vtwg8BhCZHqYW18ALx6d-IMJtN6A",
             authDomain: "epas-persuratan-arma.firebaseapp.com",
@@ -489,38 +343,269 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let dataTableInstance = null;
+        // State Global & Password Default
+        let seksiAktifSekarang = "";
+        const defaultPasswords = { "Tata Usaha": "tu123", "KPLP": "kplp123", "Kamtib": "kamtib123", "Binadik": "binadik123" };
+        let passwordSaatIni = ""; // Menyimpan password yang lolos validasi saat login
 
+        // --- CEK SESI LOGIN SAAT HALAMAN DIMUAT ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const sesiAktif = localStorage.getItem("loggedInSeksi");
+            if(sesiAktif) {
+                tampilkanAplikasiUtama(sesiAktif);
+            } else {
+                document.getElementById("login-container").classList.remove("d-none");
+            }
+        });
+
+        // --- LOGIKA LOGIN (Validasi lewat Firestore) ---
+        document.getElementById("formLogin").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const seksi = document.getElementById("loginSeksi").value;
+            const passwordInput = document.getElementById("loginPassword").value;
+            const btnLogin = document.getElementById("btnLoginBtn");
+
+            btnLogin.innerHTML = "Memeriksa Data...";
+            btnLogin.disabled = true;
+
+            try {
+                const docRef = doc(db, "user_profiles", seksi);
+                const docSnap = await getDoc(docRef);
+                
+                let isPasswordValid = false;
+
+                // Jika profil sudah ada di Firebase dan punya password khusus
+                if (docSnap.exists() && docSnap.data().password) {
+                    if (docSnap.data().password === passwordInput) {
+                        isPasswordValid = true;
+                        passwordSaatIni = docSnap.data().password;
+                    }
+                } else {
+                    // Cek menggunakan password default bawaan sistem
+                    if (defaultPasswords[seksi] === passwordInput) {
+                        isPasswordValid = true;
+                        passwordSaatIni = defaultPasswords[seksi];
+                    }
+                }
+
+                if (isPasswordValid) {
+                    localStorage.setItem("loggedInSeksi", seksi);
+                    document.getElementById("loginError").classList.add("d-none");
+                    tampilkanAplikasiUtama(seksi);
+                } else {
+                    document.getElementById("loginError").classList.remove("d-none");
+                }
+            } catch (error) {
+                alert("Gagal koneksi ke database: " + error.message);
+            } finally {
+                btnLogin.innerHTML = "🔒 Masuk";
+                btnLogin.disabled = false;
+            }
+        });
+
+        // --- LOGIKA LOGOUT ---
+        document.getElementById("btnLogout").addEventListener("click", function() {
+            localStorage.removeItem("loggedInSeksi");
+            window.location.reload(); 
+        });
+
+        // --- LOGIKA TAMPILAN UTAMA (Load Navbar) ---
+        async function tampilkanAplikasiUtama(namaSeksi) {
+            seksiAktifSekarang = namaSeksi;
+            document.getElementById("login-container").classList.add("d-none");
+            document.getElementById("main-app").classList.remove("d-none");
+            document.getElementById("userAktif").innerText = namaSeksi;
+
+            // Tarik data nama dan foto dari Firestore untuk Navbar
+            try {
+                const docRef = doc(db, "user_profiles", namaSeksi);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.nama) document.getElementById("userAktif").innerText = data.nama;
+                    if(data.fotoBase64) document.getElementById("navFotoProfil").src = data.fotoBase64;
+                    // Amankan password ke memori saat muat
+                    if(data.password) passwordSaatIni = data.password; 
+                    else passwordSaatIni = defaultPasswords[namaSeksi];
+                }
+            } catch (e) {
+                console.error("Gagal memuat profil UI: ", e);
+            }
+        }
+
+        // ======================================================================
+        // LOGIKA MODAL PROFIL & PENYIMPANAN KE FIREBASE
+        // ======================================================================
+
+        // 1. Membuka Modal & Menarik Data dari Firestore
+        document.getElementById("btnBukaProfil").addEventListener("click", async function() {
+            if(!seksiAktifSekarang) return;
+            
+            // Tampilkan Modal
+            const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
+            modal.show();
+
+            // Bersihkan field password
+            document.getElementById('passLama').value = "";
+            document.getElementById('passBaru').value = "";
+            document.getElementById('passKonfirmasi').value = "";
+            document.getElementById('infoPass').innerText = "";
+            document.getElementById('infoKonfir').innerText = "";
+
+            // Tarik data profil
+            try {
+                const docRef = doc(db, "user_profiles", seksiAktifSekarang);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('namaUser').value = data.nama || "";
+                    document.getElementById('nipUser').value = data.nip || "";
+                    document.getElementById('jabatanUser').value = data.jabatan || "";
+                    if (data.fotoBase64) document.getElementById('fotoPreview').src = data.fotoBase64;
+                }
+            } catch(e) { console.error("Gagal tarik data profil: ", e); }
+        });
+
+        // 2. Preview & Konversi Foto ke Base64
+        document.getElementById('fotoProfilInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 1048576) { // Batas 1 MB (1024 * 1024 bytes)
+                    alert("Ukuran foto terlalu besar! Maksimal 1 MB.");
+                    e.target.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('fotoPreview').src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 3. Validasi Interaktif Kekuatan Password
+        const passBaru = document.getElementById('passBaru');
+        const passKonfir = document.getElementById('passKonfirmasi');
+        const infoPass = document.getElementById('infoPass');
+        const infoKonfir = document.getElementById('infoKonfir');
+
+        passBaru.addEventListener('input', () => {
+            const regex = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (passBaru.value === "") { infoPass.innerHTML = ""; } 
+            else if (regex.test(passBaru.value)) {
+                infoPass.innerHTML = "✅ Kekuatan password sesuai standar";
+                infoPass.className = "text-success small fw-bold mt-1";
+            } else {
+                infoPass.innerHTML = "❌ Minimal 8 karakter, 1 huruf besar & 1 kecil";
+                infoPass.className = "text-danger small fw-bold mt-1";
+            }
+            if (passKonfir.value !== "") passKonfir.dispatchEvent(new Event('input'));
+        });
+
+        passKonfir.addEventListener('input', () => {
+            if (passKonfir.value === "") { infoKonfir.innerHTML = ""; } 
+            else if (passKonfir.value === passBaru.value) {
+                infoKonfir.innerHTML = "✅ Password sesuai";
+                infoKonfir.className = "text-success small fw-bold mt-1";
+            } else {
+                infoKonfir.innerHTML = "❌ Password tidak sama";
+                infoKonfir.className = "text-danger small fw-bold mt-1";
+            }
+        });
+
+        // 4. Menyimpan Profil dan Password ke Firestore
+        document.getElementById('btnSimpanProfil').addEventListener('click', async function() {
+            const btn = this;
+            if (!seksiAktifSekarang) { alert("Sesi tidak valid, login ulang."); return; }
+
+            const nama = document.getElementById('namaUser').value;
+            const nip = document.getElementById('nipUser').value;
+            const jabatan = document.getElementById('jabatanUser').value;
+            const foto = document.getElementById('fotoPreview').src;
+            
+            const passLamaInput = document.getElementById('passLama').value;
+            const passBaruInput = document.getElementById('passBaru').value;
+
+            btn.innerHTML = "⏳ Sedang Menyimpan...";
+            btn.disabled = true;
+
+            try {
+                let dataUpdate = {
+                    nama: nama,
+                    nip: nip,
+                    jabatan: jabatan,
+                    fotoBase64: foto,
+                    terakhirDiupdate: new Date().toISOString()
+                };
+
+                // Jika kolom password diisi (User ingin ubah password)
+                if (passLamaInput || passBaruInput) {
+                    if (passLamaInput !== passwordSaatIni) {
+                        alert("❌ Password Lama yang Anda masukkan salah!");
+                        btn.innerHTML = "💾 Simpan Perubahan Profil";
+                        btn.disabled = false;
+                        return;
+                    }
+                    if (infoPass.innerText.includes("❌") || infoKonfir.innerText.includes("❌") || passBaruInput === "") {
+                        alert("❌ Format password baru belum sesuai standar atau konfirmasi salah!");
+                        btn.innerHTML = "💾 Simpan Perubahan Profil";
+                        btn.disabled = false;
+                        return;
+                    }
+                    dataUpdate.password = passBaruInput;
+                    passwordSaatIni = passBaruInput; // Update state aplikasi
+                }
+
+                // Kirim ke Firestore (Gunakan merge: true agar data lain di dokumen tidak tertimpa)
+                await setDoc(doc(db, "user_profiles", seksiAktifSekarang), dataUpdate, { merge: true });
+                alert("✅ Profil berhasil diperbarui & disimpan di Cloud!");
+
+                // Update Visual Navbar
+                if(nama) document.getElementById("userAktif").innerText = nama;
+                if(foto && !foto.includes("via.placeholder")) document.getElementById("navFotoProfil").src = foto;
+
+                // Tutup Modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalProfil'));
+                modal.hide();
+
+            } catch (error) {
+                console.error("Gagal simpan profil: ", error);
+                alert("Terjadi masalah saat menyimpan profil: " + error.message);
+            } finally {
+                btn.innerHTML = "💾 Simpan Perubahan Profil";
+                btn.disabled = false;
+            }
+        });
+
+
+        // ======================================================================
+        // LOGIKA TABEL REKAP & FORM SURAT KELUAR
+        // ======================================================================
+        
+        let dataTableInstance = null;
         $(document).ready(function() {
             dataTableInstance = $('#tabelSuratKeluar').DataTable({
                 "order": [[1, "desc"]], 
-                "language": {
-                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" 
-                }
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/id.json" }
             });
             muatDataTabelSuratKeluar();
         });
 
-        // Fungsi Muat Data & Kolom Pembuat
+        // 1. Live Listener Tabel Surat Keluar
         function muatDataTabelSuratKeluar() {
             const q = query(collection(db, "surat_keluar"), orderBy("tanggal_dibuat", "desc"));
-            
             onSnapshot(q, (snapshot) => {
                 dataTableInstance.clear();
-                
                 let nomorUrutBaris = 1;
+                
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    
                     let formatTanggal = "-";
                     if (data.tanggal_dibuat) {
                         const tgl = data.tanggal_dibuat.toDate();
-                        formatTanggal = tgl.toLocaleDateString('id-ID', {
-                            day: '2-digit', month: '2-digit', year: 'numeric',
-                            hour: '2-digit', minute: '2-digit'
-                        }) + " WIB";
+                        formatTanggal = tgl.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + " WIB";
                     }
-
                     dataTableInstance.row.add([
                         nomorUrutBaris++,
                         formatTanggal,
@@ -532,16 +617,13 @@
                         `<span class="badge bg-secondary">${data.seksi_pembuat || '-'}</span>`
                     ]);
                 });
-                
                 dataTableInstance.draw();
-            }, (error) => {
-                console.error("Gagal memuat rekap data: ", error);
-            });
+            }, (error) => { console.error("Gagal memuat rekap data surat: ", error); });
         }
 
+        // 2. Penghasil Nomor Surat Otomatis
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
-            
             const btn = document.getElementById("btnGenerate");
             btn.innerHTML = "Memproses...";
             btn.disabled = true;
@@ -552,32 +634,35 @@
                 const klasifikasi = document.getElementById("subKlasifikasi").value;
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
-                
-                const seksiPembuat = localStorage.getItem("loggedInSeksi") || "Tidak Diketahui";
+                const seksiPembuat = seksiAktifSekarang || "Tidak Diketahui";
 
+                // Mengecek Counter Penomoran Berdasarkan Klasifikasi
                 const counterId = `${tahunIni}_${klasifikasi}`;
                 const counterRef = doc(db, "counter_penomoran", counterId);
                 const counterSnap = await getDoc(counterRef);
-
+                
                 let nomorTerakhir = 0;
                 if (counterSnap.exists()) {
                     nomorTerakhir = counterSnap.data().angka_terakhir;
                 }
+                
                 const nomorBaru = nomorTerakhir + 1;
-
                 let nomorLengkap = "";
+                
                 if (jenisSurat === "Surat Dinas") {
                     nomorLengkap = `W8.PAS3.${klasifikasi}.${nomorBaru}`;
                 } else if (jenisSurat === "Surat Keputusan") {
                     nomorLengkap = `W8.PAS3.${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
                 }
 
+                // Simpan update counter penomoran
                 await setDoc(counterRef, {
                     tahun: tahunIni,
                     klasifikasi: klasifikasi,
                     angka_terakhir: nomorBaru
                 });
 
+                // Simpan arsip surat keluarnya
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat,
                     kode_klasifikasi: klasifikasi,
@@ -594,14 +679,20 @@
                 document.getElementById("formSuratKeluar").reset();
 
             } catch (error) {
-                console.error("Terjadi kesalahan: ", error);
-                alert("Gagal mengambil nomor: " + error.message);
+                console.error("Terjadi kesalahan penomoran: ", error);
+                alert("Gagal mengambil nomor surat: " + error.message);
             } finally {
                 btn.innerHTML = "✨ Generate Nomor & Simpan";
                 btn.disabled = false;
             }
         });
+        
+        // 3. Listener Perubahan Select Kategori
+        document.getElementById('kategoriKlasifikasi').addEventListener('change', function() {
+            window.updateSubKlasifikasi();
+        });
     </script>
+
 
     <script>
         const dataKlasifikasi = {
@@ -959,7 +1050,6 @@
             const subSelect = document.getElementById("subKlasifikasi");
             
             subSelect.innerHTML = '<option value="" disabled selected>-- Pilih Sub Klasifikasi --</option>';
-            
             if (kategori && dataKlasifikasi[kategori]) {
                 dataKlasifikasi[kategori].forEach(function(sub) {
                     const option = document.createElement("option");
