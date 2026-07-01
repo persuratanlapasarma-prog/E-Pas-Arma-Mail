@@ -30,7 +30,7 @@
         
         /* Navigasi Tab */
         .nav-tabs { border-bottom: 2px solid rgba(7, 33, 61, 0.1); }
-        .nav-tabs .nav-link { color: #07213D; border: none; font-weight: 600; padding: 10px 20px; border-radius: 8px 8px 0 0; transition: all 0.3s ease; margin: 0 4px; }
+        .nav-tabs .nav-link { color: #07213D; border: none; font-weight: 600; padding: 10px 15px; border-radius: 8px 8px 0 0; transition: all 0.3s ease; margin: 0 2px; font-size: 0.95rem; }
         .nav-tabs .nav-link:hover { background-color: rgba(7, 33, 61, 0.05); color: #07213D; }
         .nav-tabs .nav-link.active { color: #ffffff !important; background-color: #07213D !important; border: none; box-shadow: 0 -4px 10px rgba(7, 33, 61, 0.15); }
         
@@ -73,7 +73,6 @@
                 <p class="text-secondary small">Persuratan Lapas Arga Makmur</p>
             </div>
             
-            <!-- Tombol Login Google Baru -->
             <button id="btnGoogleLogin" class="btn w-100 fw-bold py-2.5 d-flex align-items-center justify-content-center gap-2" style="background-color: #ffffff; color: #5f6368; border: 1px solid #dadce0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: background-color 0.2s;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="20" height="20">
                 Masuk dengan Google
@@ -116,9 +115,10 @@
                 <div class="col-12 col-xl-11">
                     <div class="card p-4 p-sm-5">
                         
+                        <!-- TAB NAVIGASI -->
                         <ul class="nav nav-tabs mb-4 justify-content-center" id="persuratanTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab">📤 Surat Keluar</button>
+                                <button class="nav-link active" id="keluar-tab" data-bs-toggle="tab" data-bs-target="#keluar-pane" type="button" role="tab">📤 Generate No. Surat</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="rekap-tab" data-bs-toggle="tab" data-bs-target="#rekap-pane" type="button" role="tab">📊 Rekap Surat Keluar</button>
@@ -126,10 +126,15 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="masuk-tab" data-bs-toggle="tab" data-bs-target="#masuk-pane" type="button" role="tab">📥 Surat Masuk</button>
                             </li>
+                            <!-- MENU BARU: ARSIP SURAT KELUAR -->
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="arsip-keluar-tab" data-bs-toggle="tab" data-bs-target="#arsip-keluar-pane" type="button" role="tab">📁 Arsip Surat Keluar</button>
+                            </li>
                         </ul>
 
                         <div class="tab-content" id="persuratanTabContent">
                             
+                            <!-- KONTEN: GENERATE NOMOR -->
                             <div class="tab-pane fade show active" id="keluar-pane" role="tabpanel" tabindex="0">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 col-lg-8">
@@ -192,20 +197,21 @@
                                             </button>
                                         </form>
 
-                                       <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
-    <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
-    <div class="d-flex justify-content-center align-items-center gap-2">
-        <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0" style="user-select: all; cursor: copy;" title="Blok untuk menyalin"></h3>
-        
-        <button type="button" id="btnSalinTeks" class="btn btn-sm btn-outline-secondary fw-bold" onclick="window.salinNomorManual()">
-            📋 Salin
-        </button>
-    </div>
-</div>
+                                        <!-- Hasil Generate & Copy Text -->
+                                        <div id="hasilGenerate" class="alert alert-custom-success mt-4 d-none text-center">
+                                            <p class="mb-2 fw-semibold">Nomor Surat Anda Berhasil Dibuat:</p>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                                <h3 id="teksNomorSurat" class="fw-bold text-gold-highlight mb-0" style="user-select: all; cursor: copy;" title="Blok untuk menyalin"></h3>
+                                                <button type="button" id="btnSalinTeks" class="btn btn-sm btn-outline-secondary fw-bold" onclick="window.salinNomorManual()">
+                                                    📋 Salin
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- KONTEN: TABEL REKAP -->
                             <div class="tab-pane fade" id="rekap-pane" role="tabpanel" tabindex="0">
                                 <h4 class="mb-4 fw-bold text-center" style="color: #07213D;">📊 Data Rekapan Nomor Surat Keluar</h4>
                                 <div class="table-responsive">
@@ -227,14 +233,15 @@
                                 </div>
                             </div>
 
+                            <!-- KONTEN: SURAT MASUK -->
                             <div class="tab-pane fade" id="masuk-pane" role="tabpanel" tabindex="0">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 col-lg-8 text-center py-4 px-2">
                                         <h4 class="mb-3 fw-bold" style="color: #07213D;">Digitalisasi Surat Masuk</h4>
                                         
                                         <div class="mb-4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#07213D" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
-                                                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2z"/>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#07213D" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16">
+                                                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708z"/>
                                             </svg>
                                         </div>
                                         
@@ -244,15 +251,41 @@
                                         
                                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4">
                                             <a href="https://docs.google.com/forms/d/e/1FAIpQLSezWirYleq0lo5733nwyPqi_YJAv-D0cxzHedIQSmb904sQzw/viewform" target="_blank" class="btn btn-custom-primary px-4 py-3 fw-bold">
-                                                📤 Buka & Isi Form Surat Masuk
+                                                📥 Isi Form Surat Masuk
                                             </a>
                                             <a href="https://drive.google.com/drive/folders/10Qm1qdcCxgU-HAZFZ4VdgbIibhVs1cKj" target="_blank" class="btn btn-custom-secondary px-4 py-3 fw-bold">
-                                                📁 Lihat File Surat Masuk (Drive)
+                                                📁 Lihat Drive (Surat Masuk)
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- KONTEN BARU: ARSIP SURAT KELUAR -->
+                            <div class="tab-pane fade" id="arsip-keluar-pane" role="tabpanel" tabindex="0">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-9 col-lg-8 text-center py-4 px-2">
+                                        <h4 class="mb-3 fw-bold" style="color: #07213D;">Digitalisasi Surat Keluar</h4>
+                                        
+                                        <div class="mb-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#07213D" class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
+                                                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2zm2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2z"/>
+                                            </svg>
+                                        </div>
+                                        
+                                        <p class="text-secondary mb-4">
+                                            Setelah Anda melakukan pencetakan surat fisik beserta tanda tangan dan stempel, silakan scan berkas dan arsipkan menggunakan formulir di bawah ini.
+                                        </p>
+                                        
+                                        <div class="d-flex justify-content-center mb-4">
+                                            <a href="https://docs.google.com/forms/d/e/1FAIpQLScRqXo6NOR1ng21fZpVxbuBXae4TNrDrcwFRaDPwgmz56LOEA/viewform" target="_blank" class="btn btn-custom-primary px-4 py-3 fw-bold">
+                                                📤 Buka & Isi Form Arsip Surat Keluar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div> 
                     </div>
                 </div>
@@ -260,17 +293,16 @@
         </div>
     </div> 
 
-    <!-- MODAL PROFIL (Hanya Informasi Pegawai, password dihapus karena menggunakan Google Auth) -->
+    <!-- MODAL PROFIL -->
     <div class="modal fade" id="modalProfil" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header" style="background-color: #07213D; color: white;">
-                    <h5 class="modal-title fw-bold">Pengaturan Profil & Keamanan</h5>
+                    <h5 class="modal-title fw-bold">Pengaturan Profil</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="formProfil">
-                        
                         <div class="row mb-4 align-items-center">
                             <div class="col-md-4 text-center mb-3 mb-md-0">
                                 <img src="https://via.placeholder.com/150" id="fotoPreview" class="foto-preview-modal mb-3 shadow-sm">
@@ -307,7 +339,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        // Import Modul Auth Tambahan
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         // Konfigurasi Firebase
@@ -327,10 +358,9 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // State Global
         let emailAktifSekarang = "";
 
-        // --- CEK DAN MONITOR STATUS AUTENTIKASI ---
+        // --- AUTH ---
         onAuthStateChanged(auth, function(user) {
             if (user) {
                 tampilkanAplikasiUtama(user);
@@ -340,7 +370,6 @@
             }
         });
 
-        // --- LOGIKA LOGIN MENGGUNAKAN GOOGLE ---
         document.getElementById("btnGoogleLogin").addEventListener("click", async function() {
             const btnLogin = document.getElementById("btnGoogleLogin");
             btnLogin.innerHTML = "Menghubungkan...";
@@ -358,7 +387,6 @@
             }
         });
 
-        // --- LOGIKA LOGOUT ---
         document.getElementById("btnLogout").addEventListener("click", async function() {
             try {
                 await signOut(auth);
@@ -368,18 +396,15 @@
             }
         });
 
-        // --- LOGIKA TAMPILAN UTAMA & GET/SET PROFIL KEUANGAN ---
         async function tampilkanAplikasiUtama(user) {
             emailAktifSekarang = user.email;
             document.getElementById("login-container").classList.add("d-none");
             document.getElementById("main-app").classList.remove("d-none");
             
-            // Tampilan default instan berdasarkan akun Google
             document.getElementById("userAktif").innerText = user.displayName || user.email;
             document.getElementById("navFotoProfil").src = user.photoURL || "https://via.placeholder.com/150";
 
             try {
-                // Dokumen dicari berdasarkan Email Google unik pengguna
                 const docRef = doc(db, "user_profiles", emailAktifSekarang);
                 const docSnap = await getDoc(docRef);
                 
@@ -388,7 +413,6 @@
                     if(data.nama) document.getElementById("userAktif").innerText = data.nama;
                     if(data.fotoBase64) document.getElementById("navFotoProfil").src = data.fotoBase64;
                 } else {
-                    // Jika login pertama kali, buat salinan profil default di Firestore
                     await setDoc(docRef, {
                         nama: user.displayName,
                         email: user.email,
@@ -397,17 +421,13 @@
                     }, { merge: true });
                 }
             } catch (e) {
-                console.error("Gagal memuat profil UI dari Firestore: ", e);
+                console.error("Gagal memuat profil: ", e);
             }
         }
 
-        // ======================================================================
-        // LOGIKA MODAL PROFIL & PENYIMPANAN KE FIREBASE
-        // ======================================================================
-
+        // --- PROFIL ---
         document.getElementById("btnBukaProfil").addEventListener("click", async function() {
             if(!emailAktifSekarang) return;
-            
             const modal = new bootstrap.Modal(document.getElementById('modalProfil'));
             modal.show();
 
@@ -422,7 +442,7 @@
                     document.getElementById('jabatanUser').value = data.jabatan || "";
                     if (data.fotoBase64) document.getElementById('fotoPreview').src = data.fotoBase64;
                 }
-            } catch(e) { console.error("Gagal tarik data profil: ", e); }
+            } catch(e) { console.error("Gagal tarik profil: ", e); }
         });
 
         document.getElementById('fotoProfilInput').addEventListener('change', function(e) {
@@ -430,8 +450,7 @@
             if (file) {
                 if (file.size > 1048576) { 
                     alert("Ukuran foto terlalu besar! Maksimal 1 MB.");
-                    e.target.value = "";
-                    return;
+                    e.target.value = ""; return;
                 }
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -443,7 +462,7 @@
 
         document.getElementById('btnSimpanProfil').addEventListener('click', async function() {
             const btn = this;
-            if (!emailAktifSekarang) { alert("Sesi tidak valid, silakan login ulang."); return; }
+            if (!emailAktifSekarang) { alert("Sesi tidak valid, login ulang."); return; }
 
             const nama = document.getElementById('namaUser').value;
             const nip = document.getElementById('nipUser').value;
@@ -454,37 +473,22 @@
             btn.disabled = true;
 
             try {
-                let dataUpdate = {
-                    nama: nama,
-                    nip: nip,
-                    jabatan: jabatan,
-                    fotoBase64: foto,
-                    terakhirDiupdate: new Date().toISOString()
-                };
-
-                await setDoc(doc(db, "user_profiles", emailAktifSekarang), dataUpdate, { merge: true });
+                await setDoc(doc(db, "user_profiles", emailAktifSekarang), {
+                    nama: nama, nip: nip, jabatan: jabatan, fotoBase64: foto, terakhirDiupdate: new Date().toISOString()
+                }, { merge: true });
                 alert("✅ Profil berhasil diperbarui!");
-
                 if(nama) document.getElementById("userAktif").innerText = nama;
                 if(foto && !foto.includes("via.placeholder")) document.getElementById("navFotoProfil").src = foto;
-
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalProfil'));
-                modal.hide();
-
+                bootstrap.Modal.getInstance(document.getElementById('modalProfil')).hide();
             } catch (error) {
-                console.error("Gagal simpan profil: ", error);
-                alert("Terjadi masalah saat menyimpan profil: " + error.message);
+                alert("Terjadi masalah: " + error.message);
             } finally {
                 btn.innerHTML = "💾 Simpan Perubahan Profil";
                 btn.disabled = false;
             }
         });
 
-
-        // ======================================================================
-        // LOGIKA TABEL REKAP & FORM SURAT KELUAR
-        // ======================================================================
-        
+        // --- REKAP & FORM ---
         let dataTableInstance = null;
         $(document).ready(function() {
             dataTableInstance = $('#tabelSuratKeluar').DataTable({
@@ -499,7 +503,6 @@
             onSnapshot(q, (snapshot) => {
                 dataTableInstance.clear();
                 let nomorUrutBaris = 1;
-                
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     let formatTanggal = "-";
@@ -508,25 +511,19 @@
                         formatTanggal = tgl.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + " WIB";
                     }
                     dataTableInstance.row.add([
-                        nomorUrutBaris++,
-                        formatTanggal,
-                        `<strong>${data.nomor_surat_lengkap || '-'}</strong>`,
-                        data.jenis_surat || '-',
-                        `<span class="badge bg-dark">${data.kode_klasifikasi || '-'}</span>`,
-                        data.perihal || '-',
-                        data.tujuan_surat || '-',
-                        `<span class="badge bg-secondary">${data.seksi_pembuat || '-'}</span>`
+                        nomorUrutBaris++, formatTanggal, `<strong>${data.nomor_surat_lengkap || '-'}</strong>`,
+                        data.jenis_surat || '-', `<span class="badge bg-dark">${data.kode_klasifikasi || '-'}</span>`,
+                        data.perihal || '-', data.tujuan_surat || '-', `<span class="badge bg-secondary">${data.seksi_pembuat || '-'}</span>`
                     ]);
                 });
                 dataTableInstance.draw();
-            }, (error) => { console.error("Gagal memuat rekap data surat: ", error); });
+            });
         }
 
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
             event.preventDefault(); 
             const btn = document.getElementById("btnGenerate");
-            btn.innerHTML = "Memproses...";
-            btn.disabled = true;
+            btn.innerHTML = "Memproses..."; btn.disabled = true;
 
             try {
                 const tahunIni = new Date().getFullYear();
@@ -535,63 +532,39 @@
                 const klasifikasi = document.getElementById("subKlasifikasi").value;
                 const perihal = document.getElementById("perihal").value;
                 const tujuan = document.getElementById("tujuanSurat").value;
-                
-                // Pembuat dicatat berdasarkan Nama/Email yang sedang Login
                 const seksiPembuat = document.getElementById("userAktif").innerText || emailAktifSekarang;
 
                 const counterRef = doc(db, "counter_penomoran", kategoriUtama);
                 const counterSnap = await getDoc(counterRef);
                 
-                let nomorTerakhir = 0;
-                if (counterSnap.exists()) {
-                    nomorTerakhir = counterSnap.data().angka_terakhir || 0;
-                }
-                
+                let nomorTerakhir = counterSnap.exists() ? counterSnap.data().angka_terakhir : 0;
                 const nomorBaru = nomorTerakhir + 1;
                 let nomorLengkap = "";
                 
-                if (jenisSurat === "Surat Dinas") {
-                    nomorLengkap = `WP.8.PAS.3.${klasifikasi}-${nomorBaru}`;
-                } else if (jenisSurat === "Surat Keputusan") {
-                    nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
-                }
+                if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS.3.${klasifikasi}-${nomorBaru}`;
+                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
 
-                await setDoc(counterRef, {
-                    kategori: kategoriUtama,
-                    angka_terakhir: nomorBaru
-                }, { merge: true });
-
+                await setDoc(counterRef, { kategori: kategoriUtama, angka_terakhir: nomorBaru }, { merge: true });
                 await addDoc(collection(db, "surat_keluar"), {
-                    jenis_surat: jenisSurat,
-                    kode_klasifikasi: klasifikasi, 
-                    kategori_utama: kategoriUtama,
-                    nomor_urut: nomorBaru,
-                    nomor_surat_lengkap: nomorLengkap,
-                    perihal: perihal,
-                    tujuan_surat: tujuan,
-                    seksi_pembuat: seksiPembuat, 
-                    tanggal_dibuat: serverTimestamp()
+                    jenis_surat: jenisSurat, kode_klasifikasi: klasifikasi, kategori_utama: kategoriUtama,
+                    nomor_urut: nomorBaru, nomor_surat_lengkap: nomorLengkap, perihal: perihal,
+                    tujuan_surat: tujuan, seksi_pembuat: seksiPembuat, tanggal_dibuat: serverTimestamp()
                 });
 
                 document.getElementById("teksNomorSurat").innerText = nomorLengkap;
                 document.getElementById("hasilGenerate").classList.remove("d-none");
                 document.getElementById("formSuratKeluar").reset();
-
             } catch (error) {
-                console.error("Terjadi kesalahan penomoran: ", error);
                 alert("Gagal mengambil nomor surat: " + error.message);
             } finally {
-                btn.innerHTML = "✨ Generate Nomor & Simpan";
-                btn.disabled = false;
+                btn.innerHTML = "✨ Generate Nomor & Simpan"; btn.disabled = false;
             }
         });
         
-        document.getElementById('kategoriKlasifikasi').addEventListener('change', function() {
-            window.updateSubKlasifikasi();
-        });
+        document.getElementById('kategoriKlasifikasi').addEventListener('change', window.updateSubKlasifikasi);
     </script>
 
-    <script>
+   <script>
         const dataKlasifikasi = {
             "PR": [
                 { value: "PR.01.01", text: "PR.01.01 (Rencana pembangunan jangka panjang)" },
@@ -941,7 +914,6 @@
                 { value: "PS.02.02", text: "PS.02.02 (Pelaporan dan Evaluasi)" }
             ]
         };
-
         window.updateSubKlasifikasi = function() {
             const kategori = document.getElementById("kategoriKlasifikasi").value;
             const subSelect = document.getElementById("subKlasifikasi");
@@ -950,52 +922,44 @@
             if (kategori && dataKlasifikasi[kategori]) {
                 dataKlasifikasi[kategori].forEach(function(sub) {
                     const option = document.createElement("option");
-                    option.value = sub.value; 
-                    option.text = sub.text;  
-                    subSelect.appendChild(option);
+                    option.value = sub.value; option.text = sub.text; subSelect.appendChild(option);
                 });
             }
         }
     </script>
-<script>
-    // 1. Fungsi untuk tombol "Salin" (Super Aman)
-    window.salinNomorManual = function() {
-        const teks = document.getElementById("teksNomorSurat").innerText.trim();
-        
-        // Trik Textarea Tersembunyi: Dijamin 100% Plain Text tanpa warna CSS
-        const tempTextArea = document.createElement("textarea");
-        tempTextArea.value = teks;
-        document.body.appendChild(tempTextArea);
-        tempTextArea.select();
-        document.execCommand("copy"); // Salin paksa
-        document.body.removeChild(tempTextArea); // Hapus setelah disalin
-        
-        // Ubah tampilan tombol sesaat
-        const btn = document.getElementById("btnSalinTeks");
-        const originalHTML = btn.innerHTML;
-        
-        btn.innerHTML = "✅ Tersalin!";
-        btn.classList.replace("btn-outline-secondary", "btn-success");
-        btn.style.color = "white";
-        
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.classList.replace("btn-success", "btn-outline-secondary");
-            btn.style.color = "";
-        }, 2000);
-    };
 
-    // 2. Mencegat (Intercept) Blok manual (Ctrl+C / Klik Kanan -> Copy)
-    document.addEventListener('copy', function(e) {
-        const kotakHasil = document.getElementById('hasilGenerate');
-        const seleksi = window.getSelection();
-        
-        // Jika yang diblok/dicopy berada di area kotak surat keluar
-        if (kotakHasil && kotakHasil.contains(seleksi.anchorNode)) {
-            e.preventDefault(); // Blokir browser dari menyalin warna dan format html
-            e.clipboardData.setData('text/plain', seleksi.toString()); // Masukkan hanya teks mentah
-        }
-    });
-</script>
+    <!-- SCRIPT UNTUK COPY NOMOR SURAT (100% PLAIN TEXT) -->
+    <script>
+        window.salinNomorManual = function() {
+            const teks = document.getElementById("teksNomorSurat").innerText.trim();
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = teks;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+            
+            const btn = document.getElementById("btnSalinTeks");
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = "✅ Tersalin!";
+            btn.classList.replace("btn-outline-secondary", "btn-success");
+            btn.style.color = "white";
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace("btn-success", "btn-outline-secondary");
+                btn.style.color = "";
+            }, 2000);
+        };
+
+        document.addEventListener('copy', function(e) {
+            const kotakHasil = document.getElementById('hasilGenerate');
+            const seleksi = window.getSelection();
+            if (kotakHasil && kotakHasil.contains(seleksi.anchorNode)) {
+                e.preventDefault(); 
+                e.clipboardData.setData('text/plain', seleksi.toString()); 
+            }
+        });
+    </script>
 </body>
 </html>
