@@ -284,13 +284,37 @@
         </div>
     </div> 
 
-    <div class="modal fade" id="modalProfil" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color: #07213D; color: white;">
-                    <h5 class="modal-title fw-bold">Pengaturan Profil</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- MODAL PEMBERITAHUAN -->
+    <div class="modal fade" id="modalPemberitahuan" tabindex="-1" aria-labelledby="modalPemberitahuanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <div class="modal-header" style="background-color: #EEBF63; color: #07213D; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title fw-bold" id="modalPemberitahuanLabel">⚠️ PENGUMUMAN PENTING</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body text-center p-4">
+                    <p class="fw-bold mb-3" style="font-size: 1.1rem; color: #07213D;">
+                        Penerapan klasifikasi surat yang baru mulai efektif tanggal <span class="text-danger">1 Agustus 2026</span>.
+                    </p>
+                    <p class="text-secondary mb-3" style="font-size: 0.95rem;">
+                        Dianjurkan untuk sementara melanjutkan penomoran lama. Jika sudah terlanjur menggunakan klasifikasi baru, disarankan untuk tidak menggunakannya sementara waktu sampai tanggal efektif digunakan.
+                    </p>
+                    
+                    <!-- Checkbox Jangan Tampilkan Hari Ini -->
+                    <div class="form-check d-flex justify-content-center align-items-center gap-2 mb-3 mt-4">
+                        <input class="form-check-input mt-0" type="checkbox" id="chkJanganTampilkan" style="cursor: pointer;">
+                        <label class="form-check-label text-secondary" for="chkJanganTampilkan" style="font-size: 0.9rem; cursor: pointer;">
+                            Jangan tampilkan lagi hari ini
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn btn-custom-primary px-4 py-2 fw-bold" id="btnTutupPengumuman">
+                        Baik, Saya Mengerti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
                 <div class="modal-body p-4">
                     <form id="formProfil">
                         <div class="row mb-4 align-items-center">
@@ -440,10 +464,37 @@
                 setTimeout(() => {
                     const modalPengumuman = new bootstrap.Modal(document.getElementById('modalPemberitahuan'));
                     modalPengumuman.show();
-                    sessionStorage.setItem('pengumumanDilihat', 'true');
+                   // --- KODE POP-UP PENGUMUMAN (DENGAN CHECKBOX HARI INI) ---
+            const hariIni = new Date().toDateString(); // Menghasilkan format tanggal, contoh: "Wed Jul 15 2026"
+            const pengumumanDitutupTgl = localStorage.getItem('pengumumanTglDitutup');
+
+            // Cek apakah tanggal di penyimpanan berbeda dengan hari ini
+            if (pengumumanDitutupTgl !== hariIni) {
+                setTimeout(() => {
+                    const modalEl = document.getElementById('modalPemberitahuan');
+                    const modalPengumuman = new bootstrap.Modal(modalEl);
+                    modalPengumuman.show();
+
+                    // Fungsi saat tombol "Baik, Saya Mengerti" diklik
+                    document.getElementById('btnTutupPengumuman').onclick = function() {
+                        const isChecked = document.getElementById('chkJanganTampilkan').checked;
+                        if (isChecked) {
+                            // Simpan tanggal hari ini ke penyimpanan browser (localStorage)
+                            localStorage.setItem('pengumumanTglDitutup', hariIni);
+                        }
+                        modalPengumuman.hide();
+                    };
+
+                    // Fungsi saat ditutup paksa lewat tanda 'X' atau klik luar modal
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        const isChecked = document.getElementById('chkJanganTampilkan').checked;
+                        if (isChecked) {
+                            localStorage.setItem('pengumumanTglDitutup', hariIni);
+                        }
+                    }, { once: true });
+
                 }, 800);
             }
-        }
 
         // --- PROFIL ---
         document.getElementById("btnBukaProfil").addEventListener("click", async function() {
