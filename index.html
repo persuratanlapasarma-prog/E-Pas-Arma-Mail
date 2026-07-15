@@ -324,7 +324,7 @@
             </div>
         </div>
     </div>
-<!-- MODAL PEMBERITAHUAN -->
+
     <div class="modal fade" id="modalPemberitahuan" tabindex="-1" aria-labelledby="modalPemberitahuanLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border: none; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
@@ -346,6 +346,7 @@
             </div>
         </div>
     </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -433,47 +434,17 @@
             } catch (e) {
                 console.error("Gagal memuat profil: ", e);
             }
-        }
-async function tampilkanAplikasiUtama(user) {
-            emailAktifSekarang = user.email;
-            document.getElementById("login-container").classList.add("d-none");
-            document.getElementById("main-app").classList.remove("d-none");
-            
-            document.getElementById("userAktif").innerText = user.displayName || user.email;
-            document.getElementById("navFotoProfil").src = user.photoURL || "https://via.placeholder.com/150";
 
-            try {
-                const docRef = doc(db, "user_profiles", emailAktifSekarang);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if(data.nama) document.getElementById("userAktif").innerText = data.nama;
-                    if(data.fotoBase64) document.getElementById("navFotoProfil").src = data.fotoBase64;
-                } else {
-                    await setDoc(docRef, {
-                        nama: user.displayName,
-                        email: user.email,
-                        fotoBase64: user.photoURL,
-                        terakhirDiupdate: new Date().toISOString()
-                    }, { merge: true });
-                }
-            } catch (e) {
-                console.error("Gagal memuat profil: ", e);
-            }
-
-            // --- KODE TAMBAHAN UNTUK POP-UP PENGUMUMAN ---
-            // Cek apakah pop-up sudah pernah dilihat di sesi ini
+            // --- KODE POP-UP PENGUMUMAN ---
             if (!sessionStorage.getItem('pengumumanDilihat')) {
-                // Beri sedikit jeda waktu agar animasi aplikasi utama muncul dulu
                 setTimeout(() => {
                     const modalPengumuman = new bootstrap.Modal(document.getElementById('modalPemberitahuan'));
                     modalPengumuman.show();
-                    // Simpan status bahwa pop-up sudah ditampilkan
                     sessionStorage.setItem('pengumumanDilihat', 'true');
                 }, 800);
             }
         }
+
         // --- PROFIL ---
         document.getElementById("btnBukaProfil").addEventListener("click", async function() {
             if(!emailAktifSekarang) return;
@@ -583,7 +554,6 @@ async function tampilkanAplikasiUtama(user) {
                 const tujuan = document.getElementById("tujuanSurat").value;
                 const seksiPembuat = document.getElementById("userAktif").innerText || emailAktifSekarang;
 
-                // PERBAIKAN: Gunakan 'klasifikasi' (Sub Klasifikasi) sebagai ID penyimpan angka terakhir
                 const counterRef = doc(db, "counter_penomoran", klasifikasi);
                 const counterSnap = await getDoc(counterRef);
                 
@@ -594,7 +564,6 @@ async function tampilkanAplikasiUtama(user) {
                 if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS.3.${klasifikasi}-${nomorBaru}`;
                 else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
 
-                // Simpan nomor terbaru ke Firebase dengan Sub Klasifikasi
                 await setDoc(counterRef, { sub_klasifikasi: klasifikasi, angka_terakhir: nomorBaru }, { merge: true });
                 
                 await addDoc(collection(db, "surat_keluar"), {
