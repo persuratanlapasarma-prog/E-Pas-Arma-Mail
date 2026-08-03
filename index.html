@@ -561,8 +561,8 @@
                 const nomorBaru = nomorTerakhir + 1;
                 let nomorLengkap = "";
                 
-                if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS.3.${klasifikasi}-${nomorBaru}`;
-                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS.3-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+                if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS.4.${klasifikasi}-${nomorBaru}`;
+                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS.4-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
 
                 await setDoc(counterRef, { sub_klasifikasi: klasifikasi, angka_terakhir: nomorBaru }, { merge: true });
                 
