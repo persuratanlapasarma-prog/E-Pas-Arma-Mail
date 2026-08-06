@@ -541,46 +541,66 @@
         }
 
         document.getElementById("formSuratKeluar").addEventListener("submit", async function(event) {
-            event.preventDefault(); 
-            const btn = document.getElementById("btnGenerate");
-            btn.innerHTML = "Memproses..."; btn.disabled = true;
+    event.preventDefault(); 
+    const btn = document.getElementById("btnGenerate");
+    btn.innerHTML = "Memproses..."; 
+    btn.disabled = true;
 
-            try {
-                const tahunIni = new Date().getFullYear();
-                const jenisSurat = document.getElementById("jenisSurat").value;
-                const kategoriUtama = document.getElementById("kategoriKlasifikasi").value;
-                const klasifikasi = document.getElementById("subKlasifikasi").value;
-                const perihal = document.getElementById("perihal").value;
-                const tujuan = document.getElementById("tujuanSurat").value;
-                const seksiPembuat = document.getElementById("userAktif").innerText || emailAktifSekarang;
+    try {
+        const tahunIni = new Date().getFullYear();
+        const jenisSurat = document.getElementById("jenisSurat").value;
+        const kategoriUtama = document.getElementById("kategoriKlasifikasi").value;
+        const klasifikasi = document.getElementById("subKlasifikasi").value;
+        const perihal = document.getElementById("perihal").value;
+        const tujuan = document.getElementById("tujuanSurat").value;
+        const seksiPembuat = document.getElementById("userAktif").innerText || emailAktifSekarang;
 
-                const counterRef = doc(db, "counter_penomoran", klasifikasi);
-                const counterSnap = await getDoc(counterRef);
-                
-                let nomorTerakhir = counterSnap.exists() ? counterSnap.data().angka_terakhir : 0;
-                const nomorBaru = nomorTerakhir + 1;
-                let nomorLengkap = "";
-                
-                if (jenisSurat === "Surat Dinas") nomorLengkap = `WP.8.PAS.4.${klasifikasi}-${nomorBaru}`;
-                else if (jenisSurat === "Surat Keputusan") nomorLengkap = `WP.8.PAS.4-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+        // 1. KUNCI COUNTER PADA SUB-KLASIFIKASI
+        // Logika ini memaksa Firebase menarik riwayat nomor berdasarkan sub-klasifikasi (misal UM.03.02),
+        // sehingga Surat Dinas dan Surat Keputusan akan saling melanjutkan urutan angka.
+        const counterRef = doc(db, "counter_penomoran", klasifikasi);
+        const counterSnap = await getDoc(counterRef);
+        
+        let nomorTerakhir = counterSnap.exists() ? counterSnap.data().angka_terakhir : 0;
+        const nomorBaru = nomorTerakhir + 1;
+        let nomorLengkap = "";
+        
+        // 2. PEMBENTUKAN FORMAT NOMOR SURAT (Menggunakan WP.8.PAS.4)
+        if (jenisSurat === "Surat Dinas") {
+            nomorLengkap = `WP.8.PAS.4.${klasifikasi}-${nomorBaru}`;
+        } else if (jenisSurat === "Surat Keputusan") {
+            nomorLengkap = `WP.8.PAS.4-${nomorBaru}.${klasifikasi} Tahun ${tahunIni}`;
+        }
 
-                await setDoc(counterRef, { sub_klasifikasi: klasifikasi, angka_terakhir: nomorBaru }, { merge: true });
-                
-                await addDoc(collection(db, "surat_keluar"), {
-                    jenis_surat: jenisSurat, kode_klasifikasi: klasifikasi, kategori_utama: kategoriUtama,
-                    nomor_urut: nomorBaru, nomor_surat_lengkap: nomorLengkap, perihal: perihal,
-                    tujuan_surat: tujuan, seksi_pembuat: seksiPembuat, tanggal_dibuat: serverTimestamp()
-                });
-
-                document.getElementById("teksNomorSurat").innerText = nomorLengkap;
-                document.getElementById("hasilGenerate").classList.remove("d-none");
-                document.getElementById("formSuratKeluar").reset();
-            } catch (error) {
-                alert("Gagal mengambil nomor surat: " + error.message);
-            } finally {
-                btn.innerHTML = "✨ Generate Nomor & Simpan"; btn.disabled = false;
-            }
+        // 3. UPDATE COUNTER DI DATABASE
+        await setDoc(counterRef, { 
+            sub_klasifikasi: klasifikasi, 
+            angka_terakhir: nomorBaru 
+        }, { merge: true });
+        
+        // 4. SIMPAN RIWAYAT SURAT KELUAR
+        await addDoc(collection(db, "surat_keluar"), {
+            jenis_surat: jenisSurat, 
+            kode_klasifikasi: klasifikasi, 
+            kategori_utama: kategoriUtama,
+            nomor_urut: nomorBaru, 
+            nomor_surat_lengkap: nomorLengkap, 
+            perihal: perihal,
+            tujuan_surat: tujuan, 
+            seksi_pembuat: seksiPembuat, 
+            tanggal_dibuat: serverTimestamp()
         });
+
+        document.getElementById("teksNomorSurat").innerText = nomorLengkap;
+        document.getElementById("hasilGenerate").classList.remove("d-none");
+        document.getElementById("formSuratKeluar").reset();
+    } catch (error) {
+        alert("Gagal mengambil nomor surat: " + error.message);
+    } finally {
+        btn.innerHTML = "✨ Generate Nomor & Simpan"; 
+        btn.disabled = false;
+    }
+});
         
         document.getElementById('kategoriKlasifikasi').addEventListener('change', window.updateSubKlasifikasi);
     </script>
