@@ -567,9 +567,9 @@
         
         // 2. PEMBENTUKAN FORMAT NOMOR SURAT (Menggunakan WP.8.PAS.4)
         if (jenisSurat === "Surat Dinas") {
-            nomorLengkap = `WP.8/PAS.4/${klasifikasi}/${nomorBaru}/${tahunIni}`;
+            nomorLengkap = `WP.8.PAS.4/${klasifikasi}/${nomorBaru}/${tahunIni}`;
         } else if (jenisSurat === "Surat Keputusan") {
-            nomorLengkap = `WP.8/PAS.4-${nomorBaru}/${klasifikasi}/Tahun ${tahunIni}`;
+            nomorLengkap = `WP.8.PAS.4-${nomorBaru}/${klasifikasi}/Tahun ${tahunIni}`;
         }
 
         // 3. UPDATE COUNTER DI DATABASE
