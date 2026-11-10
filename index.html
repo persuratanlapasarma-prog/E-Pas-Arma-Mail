@@ -157,7 +157,8 @@
                                                 </select>
                                             </div>
 
-                                            <div class="mb-3" id="wrapperSifatSurat">
+                                            <!-- Sifat Surat diset d-none agar tersembunyi secara default -->
+                                            <div class="mb-3 d-none" id="wrapperSifatSurat">
                                                 <label class="form-label fw-bold">Sifat Surat</label>
                                                 <select id="sifatSurat" class="form-select">
                                                     <option value="" disabled selected>-- Pilih Sifat Surat --</option>
@@ -556,7 +557,6 @@
             muatDataTabelSuratKeluar();
         });
 
-        // Fungsi Memuat Data Rekap Surat Keluar (Diperbaiki agar tidak error indeks/query Firebase)
         function muatDataTabelSuratKeluar() {
             const q = query(collection(db, "surat_keluar"));
             onSnapshot(q, (snapshot) => {
@@ -567,7 +567,6 @@
                     listData.push(doc.data());
                 });
 
-                // Urutkan data secara client-side berdasarkan tanggal terbaru
                 listData.sort((a, b) => {
                     let tglA = a.tanggal_dibuat && typeof a.tanggal_dibuat.toMillis === 'function' ? a.tanggal_dibuat.toMillis() : 0;
                     let tglB = b.tanggal_dibuat && typeof b.tanggal_dibuat.toMillis === 'function' ? b.tanggal_dibuat.toMillis() : 0;
@@ -652,7 +651,7 @@
                 // 4. SIMPAN RIWAYAT SURAT KELUAR
                 await addDoc(collection(db, "surat_keluar"), {
                     jenis_surat: jenisSurat, 
-                    sifat_surat: sifatSurat || "-",
+                    sifat_surat: jenisSurat === "Surat Dinas" ? sifatSurat : "-",
                     kode_klasifikasi: klasifikasi, 
                     kategori_utama: kategoriUtama,
                     nomor_urut: nomorBaru, 
@@ -677,16 +676,19 @@
     </script>
 
    <script>
-        // Mengatur status 'Required' dan visibilitas pilihan Sifat Surat
+        // Logika Mengatur Tampilan & Validasi Sifat Surat Berdasarkan Jenis Surat
         window.toggleSifatSurat = function() {
             const jenisSurat = document.getElementById("jenisSurat").value;
+            const wrapperSifat = document.getElementById("wrapperSifatSurat");
             const sifatSelect = document.getElementById("sifatSurat");
             
             if (jenisSurat === "Surat Dinas") {
-                sifatSelect.setAttribute("required", "required");
+                wrapperSifat.classList.remove("d-none"); // Tampilkan kolom
+                sifatSelect.setAttribute("required", "required"); // Wajib diisi
             } else {
-                sifatSelect.removeAttribute("required");
-                sifatSelect.value = "";
+                wrapperSifat.classList.add("d-none"); // Sembunyikan kolom
+                sifatSelect.removeAttribute("required"); // Tidak wajib
+                sifatSelect.value = ""; // Reset pilihan
             }
         };
 
